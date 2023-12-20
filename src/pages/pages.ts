@@ -1,7 +1,7 @@
 export enum PageRoutes {
-    HOME = "/",
-    STATS = "/stats",
-    PAYMENTS = "/payments",
-    ACCOUNTS = "/accounts",
-    MESSAGES = "/messages"
+  HOME = "/",
+  STATS = "/stats",
+  PAYMENTS = "/payments",
+  ACCOUNTS = "/accounts",
+  MESSAGES = "/messages",
 }
