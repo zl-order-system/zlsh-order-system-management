@@ -7,23 +7,23 @@ import { PageRoutes } from "../pages";
 
 function Home() {
   return (
-    <div className="flex flex-col gap-3 items-center w-full px-[1rem] pt-[1rem]">
+    <div className="flex flex-col gap-3 items-center w-full px-4 pt-4">
       <div className="text-black text-4xl font-semibold flex justify-center">訂餐後台管理系統</div>
       <div className="w-full bg-white shadow-md rounded-xl border-[1px] border-[#ACACAC] flex flex-row flex-wrap justify-around py-5">
         <PageLink linkTo={PageRoutes.STATS}>
-          <img src={statisticsIcon}></img>
+          <img src={statisticsIcon}/>
           餐項統計
         </PageLink>
         <PageLink linkTo={PageRoutes.PAYMENTS}>
-          <img src={paymentsIcon}></img>
+          <img src={paymentsIcon}/>
           繳費註記
         </PageLink>
         <PageLink linkTo={PageRoutes.ACCOUNTS}>
-          <img src={accountsIcon}></img>
+          <img src={accountsIcon}/>
           帳號管理
         </PageLink>
         <PageLink linkTo={PageRoutes.MESSAGES}>
-          <img src={messagesIcon}></img>
+          <img src={messagesIcon}/>
           訊息管理
         </PageLink>
       </div>
