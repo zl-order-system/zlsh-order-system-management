@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
-import { PageRoutes } from "../pages";
-import leftArrowIcon from "../../assets/pages/common/left-arrow-thick.svg";
+import { PageRoutes } from "../types/pages";
+import leftArrowIcon from "../assets/components/head/left-arrow-thick.svg";
 
-import leftTriangleIcon from "../../assets/pages/common/left-triangle.svg";
-import rightTriangleIcon from "../../assets/pages/common/right-triangle.svg";
+import leftTriangleIcon from "../assets/components/head/left-triangle.svg";
+import rightTriangleIcon from "../assets/components/head/right-triangle.svg";
 
 export function Head({children}: {children?: JSX.Element}) {
   return (

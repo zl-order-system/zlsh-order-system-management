@@ -1,9 +1,9 @@
-import statisticsIcon from "../../assets/pages/home/statistics.svg";
-import paymentsIcon from "../../assets/pages/home/payments.svg";
-import accountsIcon from "../../assets/pages/home/accounts.svg";
-import messagesIcon from "../../assets/pages/home/messages.svg";
+import statisticsIcon from "../assets/pages/home/statistics.svg";
+import paymentsIcon from "../assets/pages/home/payments.svg";
+import accountsIcon from "../assets/pages/home/accounts.svg";
+import messagesIcon from "../assets/pages/home/messages.svg";
 import { Link, To } from "react-router-dom";
-import { PageRoutes } from "../pages";
+import { PageRoutes } from "../types/pages";
 
 function Home() {
   return (
