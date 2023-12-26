@@ -4,6 +4,7 @@ import leftArrowIcon from "../assets/components/head/left-arrow-thick.svg";
 
 import leftTriangleIcon from "../assets/components/head/left-triangle.svg";
 import rightTriangleIcon from "../assets/components/head/right-triangle.svg";
+import { SetState } from "../types/types";
 
 export function Head({children}: {children?: JSX.Element}) {
   return (
@@ -25,13 +26,14 @@ export function BackToHome() {
   )
 }
 
-export function DateSelector() {
+export function DateSelector({selectedDate, setSeletedDate}: {selectedDate: Date, setSeletedDate: SetState<Date>}) {
   return (
     <div className="flex w-100 px-6 pt-2 justify-between items-center">
       <button><img src={leftTriangleIcon}/></button>
-      <button><span className="text-center text-black text-2xl font-medium">8月29日 星期四</span></button>
+      <button><span className="text-center text-black text-2xl font-medium">{formatDate(selectedDate)}</span></button>
       <button><img src={rightTriangleIcon}/></button>
     </div>
   )
 }
 
+const formatDate = (date: Date) => `${date.getMonth() + 1}月${date.getDate()}日 ${new Intl.DateTimeFormat('zh-TW', { weekday: 'long' }).format(date)}`;
