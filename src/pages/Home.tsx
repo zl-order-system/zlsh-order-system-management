@@ -31,7 +31,7 @@ function Home() {
   );
 }
 
-function PageLink({ children, linkTo }: { children: [React.ReactNode, string]; linkTo: To }) {
+function PageLink({children, linkTo}: {children: [React.ReactNode, string]; linkTo: To}) {
   return (
     <Link to={linkTo} className="flex flex-col gap-3 py-5 mx-5 items-center">
       <div className="w-32 h-32 rounded-[1.75rem] bg-[#D5EFF9] flex justify-center items-center">{children[0]}</div>

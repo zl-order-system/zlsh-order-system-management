@@ -101,7 +101,7 @@ function DetailsModal({detailsData, setDetailsData}: {detailsData: DetailsData, 
   return (
     <div className="fixed flex justify-around items-center inset-0 p-6 bg-black/30 backdrop-blur-sm">
       <div className="bg-white flex flex-col justify-center items-center p-6 rounded-3xl shadow-lg border border-zinc-600 gap-5 w-full">
-        <h2 className="text-center mb-2 text-3xl font-normal">{detailsData?.name}</h2>
+        <h2 className="text-center mb-2 text-3xl font-normal">{detailsData.name}</h2>
         <div className="flex flex-col text-left w-full">
           <h3 className="text-left text-neutral-600 text-xl font-bold">自備餐盒</h3>
           <p className="text-left text-2xl">{data?.personalLunchBox.map(v => v + ", ")}</p>
