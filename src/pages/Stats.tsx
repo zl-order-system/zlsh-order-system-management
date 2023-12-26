@@ -10,6 +10,7 @@ type DetailsData = {
   name: string
 } | null
 
+// Page main component
 function Stats() {
   const [statData, setStatData] = useState<GetStatDataResponse>();
   const [detailsData, setDetailsData] = useState<DetailsData>(null);
@@ -30,6 +31,8 @@ function Stats() {
   );
 }
 
+
+// Table
 function Table({tableData, setDetailsData}: {tableData?: GetStatDataResponse, setDetailsData: SetState<DetailsData>}) {
   const titleCells: JSX.Element[] = [];
   const personalBoxCells: JSX.Element[] = [];
@@ -65,28 +68,6 @@ function Table({tableData, setDetailsData}: {tableData?: GetStatDataResponse, se
   );
 }
 
-function DetailsModal({detailsData, setDetailsData}: {detailsData: DetailsData, setDetailsData: SetState<DetailsData>}) {
-  const [data, setData] = useState<GetStatDetailedDataResponse>();
-
-  useEffect(() => {
-    if (detailsData == null) return;
-    getDetailedStatData({date: new Date(), mealID: detailsData.id}).then(v => setData(v));
-    console.log("hi");
-  }, [detailsData]);
-
-  if (detailsData == null) return;
-
-  return (
-    <Dialog open={detailsData != null} onClose={() => setDetailsData(null)}>
-      <Dialog.Panel>
-        <Dialog.Title>{detailsData.id + 1}. {detailsData?.name}</Dialog.Title>
-        <p>{data?.personalLunchBox.map(v => v + ", ")}</p>
-        <p>{data?.schoolLunchBox.map(v => v + ", ")}</p>
-      </Dialog.Panel>
-    </Dialog>
-  );
-}
-
 function TitleColumn({children}: {children?: JSX.Element[] | JSX.Element}) {
   return (
     <div className="flex flex-col text-left gap-2.5">
@@ -103,6 +84,33 @@ function Column({children, title}: {children?: JSX.Element[] | JSX.Element, titl
       {children}
     </div>
   )
+}
+
+
+// Details Modal
+function DetailsModal({detailsData, setDetailsData}: {detailsData: DetailsData, setDetailsData: SetState<DetailsData>}) {
+  const [data, setData] = useState<GetStatDetailedDataResponse>();
+
+  useEffect(() => {
+    if (detailsData == null) return;
+    getDetailedStatData({date: new Date(), mealID: detailsData.id}).then(v => setData(v));
+  }, [detailsData]);
+
+  if (detailsData == null) return;
+
+  return (
+    <>
+      <div onClick={() => setDetailsData(null)} className="fixed inset-0 z-10 bg-black/30 backdrop-blur-sm" aria-hidden="true" />
+      <div onClick={() => setDetailsData(null)} className="fixed inset-0 z-20 grid place-content-center p-4">
+        {/* The actual modal */}
+        <Dialog.Panel className="bg-white">
+          <Dialog.Title>{detailsData.id + 1}. {detailsData?.name}</Dialog.Title>
+          <p>{data?.personalLunchBox.map(v => v + ", ")}</p>
+          <p>{data?.schoolLunchBox.map(v => v + ", ")}</p>
+        </Dialog.Panel>
+      </div>
+    </>
+  );
 }
 
 export default Stats;
