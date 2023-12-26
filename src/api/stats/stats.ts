@@ -6,7 +6,7 @@ export async function getStatData(_reqData: GetStatDataRequest): Promise<GetStat
   await(t => new Promise(r => setTimeout(r, t)))(500);
   return [
     {
-      name: "滷肉飯",
+      name: "周奕宇的隔夜飯",
       schoolBoxCount: 5,
       personalBoxCount: 4,
     },
@@ -16,7 +16,7 @@ export async function getStatData(_reqData: GetStatDataRequest): Promise<GetStat
       personalBoxCount: 4,
     },
     {
-      name: "牛肉麵",
+      name: "拉麵",
       schoolBoxCount: 1,
       personalBoxCount: 0,
     },
