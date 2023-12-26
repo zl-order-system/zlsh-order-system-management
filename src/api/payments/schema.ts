@@ -14,3 +14,8 @@ export type GetPaymentDataResponse = {
   lunchBox: lunchBoxType,
   paid: boolean,
 }[]
+
+export type PostPaymentDataRequest = {
+  date: Date,
+  id: number
+}
