@@ -5,12 +5,12 @@ import { SetState } from "../types/types";
 
 export function Payments() {
   const [value, setValue] = useState("");
-  const [selectedDate, setSeletedDate] = useState<Date>(new Date());
+  const [selectedDate, setSeletedDate] = useState(new Date());
 
   return (
     <div className="flex flex-col w-100 py-4 gap-4">
       <Head>
-        <DateSelector selectedDate={selectedDate} setSeletedDate={setSeletedDate}/>
+        <DateSelector selectedDate={selectedDate} setSelectedDate={setSeletedDate}/>
       </Head>
       <SearchBar setValue={setValue}/>
       <p>{value}</p>

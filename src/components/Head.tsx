@@ -5,6 +5,8 @@ import leftArrowIcon from "../assets/components/head/left-arrow-thick.svg";
 import leftTriangleIcon from "../assets/components/head/left-triangle.svg";
 import rightTriangleIcon from "../assets/components/head/right-triangle.svg";
 import { SetState } from "../types/types";
+import { useEffect, useState } from "react";
+import { getUpcommingDates } from "../api/dates/dates";
 
 export function Head({children}: {children?: JSX.Element}) {
   return (
@@ -26,12 +28,35 @@ export function BackToHome() {
   )
 }
 
-export function DateSelector({selectedDate, setSeletedDate}: {selectedDate: Date, setSeletedDate: SetState<Date>}) {
+export function DateSelector({selectedDate, setSelectedDate}: {selectedDate: Date, setSelectedDate: SetState<Date>}) {
+  const [dates, setDates] = useState<Date[]>();
+  const [dateID, setDateID] = useState(0);
+
+  useEffect(() => {
+    getUpcommingDates().then(v => setDates(v.dates))
+  }, [])
+
+  useEffect(() => {
+    if (dates == undefined) return;
+    setSelectedDate(dates[dateID])
+  }, [dates, dateID])
+
+  function nextDate() {
+    if (dates == undefined) return;
+    if (dateID + 1 >= dates.length) return;
+    setDateID(dateID + 1);
+  }
+
+  function prevDate() {
+    if (dateID - 1 < 0) return;
+    setDateID(dateID - 1);
+  }
+
   return (
     <div className="flex w-100 px-6 pt-2 justify-between items-center">
-      <button><img src={leftTriangleIcon}/></button>
+      <button onClick={prevDate}><img src={leftTriangleIcon}/></button>
       <button><span className="text-center text-black text-2xl font-medium">{formatDate(selectedDate)}</span></button>
-      <button><img src={rightTriangleIcon}/></button>
+      <button onClick={nextDate}><img src={rightTriangleIcon}/></button>
     </div>
   )
 }

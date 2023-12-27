@@ -24,7 +24,7 @@ function Stats() {
       {/* {detailsData != null && <button onClick={() => setDetailsData(null)}>Modal Placeholder</button>} */}
       <DetailsModal detailsData={detailsData} setDetailsData={setDetailsData}/>
       <Head>
-        <DateSelector selectedDate={selectedDate} setSeletedDate={setSeletedDate}/>
+        <DateSelector selectedDate={selectedDate} setSelectedDate={setSeletedDate}/>
       </Head>
       <Table tableData={statData} setDetailsData={setDetailsData}/>
     </div>
