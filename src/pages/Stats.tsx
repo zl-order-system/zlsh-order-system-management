@@ -2,12 +2,13 @@ import { useEffect, useState } from "react";
 import { GetStatDataResponse, GetStatDetailedDataResponse } from "../api/stats/schema";
 import { DateSelector, Head } from "../components/Head";
 import { getDetailedStatData, getStatData } from "../api/stats/stats";
-import { SetState } from "../types/types";
+import { SetState } from "../util/types/types";
+import { Column, TitleColumn } from "../components/Table";
 
 type DetailsData = {
   id: number,
   name: string
-} | null
+} | null;
 
 // Page main component
 function Stats() {
@@ -32,7 +33,6 @@ function Stats() {
 }
 
 
-// Table
 function Table({tableData, setDetailsData}: {tableData?: GetStatDataResponse, setDetailsData: SetState<DetailsData>}) {
   const titleCells: JSX.Element[] = [];
   const personalBoxCells: JSX.Element[] = [];
@@ -55,7 +55,7 @@ function Table({tableData, setDetailsData}: {tableData?: GetStatDataResponse, se
 
   return (
     <div className="flex justify justify-between px-8">
-      <TitleColumn>
+      <TitleColumn title="餐項">
         <>{titleCells}</>
       </TitleColumn>
       <Column title="自備餐盒">
@@ -67,25 +67,6 @@ function Table({tableData, setDetailsData}: {tableData?: GetStatDataResponse, se
     </div>
   );
 }
-
-function TitleColumn({children}: {children?: JSX.Element[] | JSX.Element}) {
-  return (
-    <div className="flex flex-col text-left gap-2.5">
-      <div className="text-neutral-600 text-lg font-bold">餐項</div>
-      {children}
-    </div>
-  );
-}
-
-function Column({children, title}: {children?: JSX.Element[] | JSX.Element, title: string}) {
-  return (
-    <div className="flex flex-col text-center gap-2.5">
-      <div className="text-neutral-600 text-lg font-bold">{title}</div>
-      {children}
-    </div>
-  )
-}
-
 
 // Details Modal
 function DetailsModal({detailsData, setDetailsData}: {detailsData: DetailsData, setDetailsData: SetState<DetailsData>}) {
@@ -108,7 +89,7 @@ function DetailsModal({detailsData, setDetailsData}: {detailsData: DetailsData, 
           <h3 className="text-left text-neutral-600 text-xl font-bold">學校餐盒</h3>
           <p className="text-left text-2xl">{data?.schoolLunchBox.map(v => v + ", ")}</p>
         </div>
-        <button onClick={() => setDetailsData(null)} className="text-cyan-500 font-extrabold text-2xl">關閉</button>
+        <button onClick={() => setDetailsData(null)} className="text-[#00C0CC] font-extrabold text-2xl">關閉</button>
       </div>
     </div>
   );

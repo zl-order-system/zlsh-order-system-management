@@ -1,12 +1,12 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { PageRoutes } from "../types/pages";
-import leftArrowIcon from "../assets/components/head/left-arrow-thick.svg";
+import { SetState } from "../util/types/types";
+import { PageRoutes } from "../util/types/pages";
+import { getUpcommingDates } from "../api/dates/dates";
 
+import leftArrowIcon from "../assets/components/head/left-arrow-thick.svg";
 import leftTriangleIcon from "../assets/components/head/left-triangle.svg";
 import rightTriangleIcon from "../assets/components/head/right-triangle.svg";
-import { SetState } from "../types/types";
-import { useEffect, useState } from "react";
-import { getUpcommingDates } from "../api/dates/dates";
 
 export function Head({children}: {children?: JSX.Element}) {
   return (
@@ -55,7 +55,7 @@ export function DateSelector({selectedDate, setSelectedDate}: {selectedDate: Dat
   return (
     <div className="flex w-100 px-6 pt-2 justify-between items-center">
       <button onClick={prevDate}><img src={leftTriangleIcon}/></button>
-      <button><span className="text-center text-black text-2xl font-medium">{formatDate(selectedDate)}</span></button>
+      <div><span className="text-center text-black text-2xl font-medium">{formatDate(selectedDate)}</span></div>
       <button onClick={nextDate}><img src={rightTriangleIcon}/></button>
     </div>
   )

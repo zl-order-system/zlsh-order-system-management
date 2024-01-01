@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { PageRoutes } from "./types/pages";
+import { PageRoutes } from "./util/types/pages";
 import Home from "./pages/Home";
 import Stats from "./pages/Stats";
 import { Payments } from "./pages/Payments";

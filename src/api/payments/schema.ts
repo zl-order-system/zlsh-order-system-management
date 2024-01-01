@@ -1,4 +1,4 @@
-export enum lunchBoxType {
+export enum LunchBoxType {
   SCHOOL = "學校餐盒",
   PERSONAL = "自備餐盒",
 }
@@ -11,7 +11,8 @@ export type GetPaymentDataResponse = {
   id: number,
   name: string,
   seatNumber: number,
-  lunchBox: lunchBoxType,
+  lunchBox: LunchBoxType,
+  mealName: string,
   paid: boolean,
 }[]
 

@@ -3,7 +3,7 @@ import paymentsIcon from "../assets/pages/home/payments.svg";
 import accountsIcon from "../assets/pages/home/accounts.svg";
 import messagesIcon from "../assets/pages/home/messages.svg";
 import { Link, To } from "react-router-dom";
-import { PageRoutes } from "../types/pages";
+import { PageRoutes } from "../util/types/pages";
 
 function Home() {
   return (

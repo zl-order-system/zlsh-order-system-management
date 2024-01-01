@@ -1,19 +1,29 @@
 import { DateSelector, Head } from "../components/Head";
 import searchIcon from "../assets/pages/payments/search-icon.svg";
-import { useState } from "react";
-import { SetState } from "../types/types";
+import { useEffect, useState } from "react";
+import { SetState } from "../util/types/types";
+import { GetPaymentDataResponse } from "../api/payments/schema";
+import { Column, TitleColumn } from "../components/Table";
+import { getPrice } from "../util/util";
+import { getPaymentData } from "../api/payments/payments";
 
 export function Payments() {
-  const [value, setValue] = useState("");
+  const [searchText, setSearchText] = useState("");
   const [selectedDate, setSeletedDate] = useState(new Date());
+  const [paymentData, setPaymentData] = useState<GetPaymentDataResponse>();
+
+  useEffect(()=> {
+    getPaymentData({date: selectedDate}).then(v => setPaymentData(v));
+  }, [selectedDate]);
 
   return (
     <div className="flex flex-col w-100 py-4 gap-4">
       <Head>
         <DateSelector selectedDate={selectedDate} setSelectedDate={setSeletedDate}/>
       </Head>
-      <SearchBar setValue={setValue}/>
-      <p>{value}</p>
+      <SearchBar setValue={setSearchText}/>
+      <p>{searchText}</p>
+      <Table tableData={paymentData}/>
     </div>
   )
 }
@@ -32,4 +42,48 @@ function SearchBar({setValue}: {setValue: SetState<string>}) {
       </div>
     </div>
   )
+}
+
+function Table({tableData}: {tableData?: GetPaymentDataResponse}) {
+  const titleCells: JSX.Element[] = [];
+  const mealNameCells: JSX.Element[] = [];
+  const priceCells: JSX.Element[] = [];
+  const hasPaidCells: JSX.Element[] = [];
+
+  // TODO: Inplement onClick
+  tableData?.forEach((v, i) => {
+    titleCells.push(
+      <span className="text-left text-black text-xl font-normal" key={i}>{v.name}</span>
+    );
+    mealNameCells.push(
+      <span className="text-center text-black text-xl font-normal" key={i}>{v.mealName}</span>
+    );
+    priceCells.push(
+      <span className="text-center text-black text-xl font-normal" key={i}>{getPrice(v.lunchBox)}元</span>
+    );
+
+    if (v.paid) hasPaidCells.push(
+      <span className="text-center text-neutral-400 text-xl font-bold" key={i}>已繳費</span>
+    );
+    else hasPaidCells.push(
+      <button className="text-center text-[#00C0CC] text-xl font-bold" key={i}>註記繳費</button>
+    );
+  });
+
+  return (
+    <div className="flex justify justify-between px-8">
+      <TitleColumn>
+        <>{titleCells}</>
+      </TitleColumn>
+      <Column>
+        <>{mealNameCells}</>
+      </Column>
+      <Column>
+        <>{priceCells}</>
+      </Column>
+      <Column>
+        <>{hasPaidCells}</>
+      </Column>
+    </div>
+  );
 }

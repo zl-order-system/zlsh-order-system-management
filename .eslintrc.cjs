@@ -13,6 +13,7 @@ module.exports = {
     "prefer-const": "warn",
     "no-unused-vars": "warn",
     "@typescript-eslint/no-unused-vars": "off",
+    "@typescript-eslint/no-explicit-any": "warning",
     "indent": ["warn", 2],
     'react-refresh/only-export-components': [
       'warn',
