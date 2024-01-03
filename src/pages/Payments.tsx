@@ -9,21 +9,25 @@ import { getPaymentData } from "../api/payments/payments";
 
 export function Payments() {
   const [searchText, setSearchText] = useState("");
-  const [selectedDate, setSeletedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [paymentData, setPaymentData] = useState<GetPaymentDataResponse>();
+  const [filteredData, setFilteredData] = useState<GetPaymentDataResponse>();
 
   useEffect(()=> {
     getPaymentData({date: selectedDate}).then(v => setPaymentData(v));
   }, [selectedDate]);
 
+  useEffect(() => {
+    setFilteredData(filterBySearchKeyword(searchText, paymentData));
+  }, [searchText, paymentData])
+
   return (
     <div className="flex flex-col w-100 py-4 gap-4">
       <Head>
-        <DateSelector selectedDate={selectedDate} setSelectedDate={setSeletedDate}/>
+        <DateSelector selectedDate={selectedDate} setSelectedDate={setSelectedDate}/>
       </Head>
       <SearchBar setValue={setSearchText}/>
-      <p>{searchText}</p>
-      <Table tableData={paymentData}/>
+      <Table tableData={filteredData}/>
     </div>
   )
 }
@@ -41,6 +45,17 @@ function SearchBar({setValue}: {setValue: SetState<string>}) {
         <div className="absolute top-0 left-2.5 grid place-content-center h-full"><img src={searchIcon}/></div>
       </div>
     </div>
+  )
+}
+
+function filterBySearchKeyword(keyword: string, tableData?: GetPaymentDataResponse) {
+  if (tableData == undefined) return undefined;
+  if (keyword == "") return tableData;
+  return tableData.filter(v =>
+    v.name.includes(keyword) ||
+    v.mealName.includes(keyword) ||
+    v.lunchBox.includes(keyword) ||
+    v.seatNumber.toString().includes(keyword)
   )
 }
 
