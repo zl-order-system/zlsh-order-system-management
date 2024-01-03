@@ -7,7 +7,7 @@ import { Column, TitleColumn } from "../components/Table";
 import { getPrice } from "../util/util";
 import { getPaymentData, putPaymentApproveRequest } from "../api/payments/payments";
 
-export function Payments() {
+function Payments() {
   const [searchText, setSearchText] = useState("");
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [paymentData, setPaymentData] = useState<GetPaymentDataResponse>();
@@ -109,3 +109,5 @@ function Table({tableData, approve}: {tableData?: GetPaymentDataResponse, approv
     </div>
   );
 }
+
+export default Payments;
