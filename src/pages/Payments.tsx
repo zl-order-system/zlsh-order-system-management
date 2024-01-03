@@ -18,7 +18,6 @@ export function Payments() {
   }, [selectedDate]);
 
   useEffect(() => {
-    console.log(paymentData);
     setFilteredData(filterBySearchKeyword(searchText, paymentData));
   }, [searchText, paymentData])
 
