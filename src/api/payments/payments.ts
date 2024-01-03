@@ -1,16 +1,18 @@
-import { GetPaymentDataRequest, GetPaymentDataResponse, LunchBoxType } from "./schema";
+import { GetPaymentDataRequest, GetPaymentDataResponse, LunchBoxType, PutPaymentApproveRequest } from "./schema";
+
+let approved = new Set<number>;
 
 export async function getPaymentData(_reqData: GetPaymentDataRequest): Promise<GetPaymentDataResponse> {
   // Fake data for development
   await(t => new Promise(r => setTimeout(r, t)))(500);
-  return [
+  const data = [
     {
       id: 11230201,
       name: "王大明",
       seatNumber: 1,
       lunchBox: LunchBoxType.SCHOOL,
       mealName: "滷肉飯",
-      paid: false
+      paid: approved.has(11230201)
     },
     {
       id: 11230202,
@@ -18,7 +20,7 @@ export async function getPaymentData(_reqData: GetPaymentDataRequest): Promise<G
       seatNumber: 2,
       lunchBox: LunchBoxType.PERSONAL,
       mealName: "雞肉飯",
-      paid: true
+      paid: approved.has(11230202)
     },
     {
       id: 11230203,
@@ -26,7 +28,12 @@ export async function getPaymentData(_reqData: GetPaymentDataRequest): Promise<G
       seatNumber: 3,
       lunchBox: LunchBoxType.SCHOOL,
       mealName: "鵝肉飯",
-      paid: false
+      paid: approved.has(11230203)
     }
   ];
+  return data;
+}
+
+export async function putPaymentApproveRequest(reqData: PutPaymentApproveRequest) {
+  approved.add(reqData.id);
 }

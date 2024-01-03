@@ -16,7 +16,7 @@ export type GetPaymentDataResponse = {
   paid: boolean,
 }[]
 
-export type PostPaymentDataRequest = {
+export type PutPaymentApproveRequest = {
   date: Date,
   id: number
 }

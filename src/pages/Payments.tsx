@@ -5,7 +5,7 @@ import { SetState } from "../util/types/types";
 import { GetPaymentDataResponse } from "../api/payments/schema";
 import { Column, TitleColumn } from "../components/Table";
 import { getPrice } from "../util/util";
-import { getPaymentData } from "../api/payments/payments";
+import { getPaymentData, putPaymentApproveRequest } from "../api/payments/payments";
 
 export function Payments() {
   const [searchText, setSearchText] = useState("");
@@ -18,8 +18,16 @@ export function Payments() {
   }, [selectedDate]);
 
   useEffect(() => {
+    console.log(paymentData);
     setFilteredData(filterBySearchKeyword(searchText, paymentData));
   }, [searchText, paymentData])
+
+  function approve(id: number) {
+    return async () => {
+      await putPaymentApproveRequest({id: id, date: selectedDate})
+      setPaymentData(await getPaymentData({date: selectedDate}));
+    }
+  }
 
   return (
     <div className="flex flex-col w-100 py-4 gap-4">
@@ -27,7 +35,7 @@ export function Payments() {
         <DateSelector selectedDate={selectedDate} setSelectedDate={setSelectedDate}/>
       </Head>
       <SearchBar setValue={setSearchText}/>
-      <Table tableData={filteredData}/>
+      <Table tableData={filteredData} approve={approve}/>
     </div>
   )
 }
@@ -59,7 +67,7 @@ function filterBySearchKeyword(keyword: string, tableData?: GetPaymentDataRespon
   )
 }
 
-function Table({tableData}: {tableData?: GetPaymentDataResponse}) {
+function Table({tableData, approve}: {tableData?: GetPaymentDataResponse, approve: ((id: number) => () => Promise<void>)}) {
   const titleCells: JSX.Element[] = [];
   const mealNameCells: JSX.Element[] = [];
   const priceCells: JSX.Element[] = [];
@@ -81,7 +89,7 @@ function Table({tableData}: {tableData?: GetPaymentDataResponse}) {
       <span className="text-center text-neutral-400 text-xl font-bold" key={i}>已繳費</span>
     );
     else hasPaidCells.push(
-      <button className="text-center text-[#00C0CC] text-xl font-bold" key={i}>註記繳費</button>
+      <button className="text-center text-[#00C0CC] text-xl font-bold" onClick={approve(v.id)} key={i}>註記繳費</button>
     );
   });
 

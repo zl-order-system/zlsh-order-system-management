@@ -14,7 +14,7 @@ type DetailsData = {
 function Stats() {
   const [statData, setStatData] = useState<GetStatDataResponse>();
   const [detailsData, setDetailsData] = useState<DetailsData>(null);
-  const [selectedDate, setSeletedDate] = useState<Date>(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
   useEffect(()=> {
     getStatData({date: selectedDate}).then(v => setStatData(v));
@@ -25,7 +25,7 @@ function Stats() {
       {/* {detailsData != null && <button onClick={() => setDetailsData(null)}>Modal Placeholder</button>} */}
       <DetailsModal detailsData={detailsData} setDetailsData={setDetailsData}/>
       <Head>
-        <DateSelector selectedDate={selectedDate} setSelectedDate={setSeletedDate}/>
+        <DateSelector selectedDate={selectedDate} setSelectedDate={setSelectedDate}/>
       </Head>
       <Table tableData={statData} setDetailsData={setDetailsData}/>
     </div>
