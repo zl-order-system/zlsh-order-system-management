@@ -2,6 +2,7 @@ import statisticsIcon from "../assets/pages/home/statistics.svg";
 import paymentsIcon from "../assets/pages/home/payments.svg";
 import accountsIcon from "../assets/pages/home/accounts.svg";
 import messagesIcon from "../assets/pages/home/messages.svg";
+import mealIcon from "../assets/pages/home/meal.svg";
 import { Link, To } from "react-router-dom";
 import { PageRoutes } from "../util/types/pages";
 
@@ -17,6 +18,10 @@ function Home() {
         <PageLink linkTo={PageRoutes.PAYMENTS}>
           <img src={paymentsIcon}/>
           繳費註記
+        </PageLink>
+        <PageLink linkTo={PageRoutes.MEAL}>
+          <img src={mealIcon}/>
+          餐項管理
         </PageLink>
         <PageLink linkTo={PageRoutes.ACCOUNTS}>
           <img src={accountsIcon}/>

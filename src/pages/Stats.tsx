@@ -21,7 +21,7 @@ function Stats() {
   }, [selectedDate]);
 
   return (
-    <div className="flex flex-col w-100 py-4 gap-4">
+    <div className="flex flex-col w-100 pb-4 gap-4">
       {/* {detailsData != null && <button onClick={() => setDetailsData(null)}>Modal Placeholder</button>} */}
       <DetailsModal detailsData={detailsData} setDetailsData={setDetailsData}/>
       <Head>

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { SetState } from "../util/types/types";
 import { PageRoutes } from "../util/types/pages";
-import { getUpcommingDates } from "../api/dates/dates";
+import { getUpcomingDates } from "../api/dates/dates";
 
 import leftArrowIcon from "../assets/components/head/left-arrow-thick.svg";
 import leftTriangleIcon from "../assets/components/head/left-triangle.svg";
@@ -10,10 +10,10 @@ import rightTriangleIcon from "../assets/components/head/right-triangle.svg";
 
 export function Head({children}: {children?: JSX.Element}) {
   return (
-    <div className="flex flex-col w-100 gap-2">
+    <div className="flex flex-col w-100 pt-3.5">
       <BackToHome/>
       {children}
-      <span className="block h-[1px] w-100 bg-[#A1A1A1]"></span>
+      <span className="block mt-3 h-[1px] w-100 bg-[#A1A1A1]"></span>
     </div>
   )
 }
@@ -33,7 +33,7 @@ export function DateSelector({selectedDate, setSelectedDate}: {selectedDate: Dat
   const [dateID, setDateID] = useState(0);
 
   useEffect(() => {
-    getUpcommingDates().then(v => setDates(v.dates))
+    getUpcomingDates().then(v => setDates(v.dates))
   }, [])
 
   useEffect(() => {
@@ -53,7 +53,7 @@ export function DateSelector({selectedDate, setSelectedDate}: {selectedDate: Dat
   }
 
   return (
-    <div className="flex w-100 px-6 pt-2 justify-between items-center">
+    <div className="flex w-100 pt-2 px-6 justify-between items-center">
       <button onClick={prevDate}><img src={leftTriangleIcon}/></button>
       <div><span className="text-center text-black text-2xl font-medium">{formatDate(selectedDate)}</span></div>
       <button onClick={nextDate}><img src={rightTriangleIcon}/></button>

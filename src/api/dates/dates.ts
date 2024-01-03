@@ -1,6 +1,6 @@
-import { GetUpcommingDatesResponse } from "./schema";
+import { GetUpcomingDatesResponse } from "./schema";
 
-export async function getUpcommingDates(): Promise<GetUpcommingDatesResponse> {
+export async function getUpcomingDates(): Promise<GetUpcomingDatesResponse> {
   // Fake data for development
   await(t => new Promise(r => setTimeout(r, t)))(500);
   return {

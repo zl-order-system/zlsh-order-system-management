@@ -3,6 +3,7 @@ import { PageRoutes } from "./util/types/pages";
 import Home from "./pages/Home";
 import Stats from "./pages/Stats";
 import { Payments } from "./pages/Payments";
+import { Meal } from "./pages/Meal";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
           <Route path={PageRoutes.HOME} element={<Home/>} />
           <Route path={PageRoutes.STATS} element={<Stats/>} />
           <Route path={PageRoutes.PAYMENTS} element={<Payments/>} />
+          <Route path={PageRoutes.MEAL} element={<Meal/>} />
         </Routes>
       </Router>
     </div>

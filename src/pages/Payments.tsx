@@ -29,7 +29,7 @@ export function Payments() {
   }
 
   return (
-    <div className="flex flex-col w-100 py-4 gap-4">
+    <div className="flex flex-col w-100 pb-4 gap-4">
       <Head>
         <DateSelector selectedDate={selectedDate} setSelectedDate={setSelectedDate}/>
       </Head>
