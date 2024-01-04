@@ -44,12 +44,12 @@ export function DateSelector({selectedDate, setSelectedDate}: {selectedDate: Dat
   function nextDate() {
     if (dates == undefined) return;
     if (dateID + 1 >= dates.length) return;
-    setDateID(dateID + 1);
+    setDateID(v => v + 1);
   }
 
   function prevDate() {
     if (dateID - 1 < 0) return;
-    setDateID(dateID - 1);
+    setDateID(v => v - 1);
   }
 
   return (
