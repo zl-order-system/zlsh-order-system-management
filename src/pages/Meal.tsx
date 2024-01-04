@@ -53,6 +53,11 @@ function DetailsModal({date, setDate}: {date: Date | null, setDate: SetState<Dat
       <div className="bg-white flex flex-col justify-center items-center p-6 rounded-3xl shadow-lg border border-zinc-600 gap-5 w-full">
         <h2 className="text-center mb-2 text-3xl font-normal">{formatDate(date)}</h2>
         <div className="flex flex-col text-left w-full">
+          <div className="flex w-full gap-2">
+            <input className="h-7 w-7 border-[1px] border-black outline-none rounded-lg"/>
+            <input className="h-7 w-7 border-[1px] border-black outline-none rounded-lg"/>
+            <button className="text-[#00C0CC] font-extrabold text-2xl">新增</button>
+          </div>
         </div>
         <div className="flex gap-8">
           <button className="text-[#00C0CC] font-extrabold text-2xl">確定</button>
