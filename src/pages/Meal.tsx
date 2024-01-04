@@ -25,8 +25,8 @@ function List({setModalDate}: {setModalDate: SetState<Date | null>}) {
 
   return (
     <ul className="flex flex-col gap-4 py-4">
-      {dates?.map(v =>
-        <li className="flex justify-between px-6">
+      {dates?.map((v, i) =>
+        <li className="flex justify-between px-6" key={i}>
           <span className="text-xl">{formatDate(v)}</span>
           <button onClick={() => setModalDate(v)} className="text-xl text-[#00C0CC] font-semibold">查看</button>
         </li>
