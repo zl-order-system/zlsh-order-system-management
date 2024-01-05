@@ -1,3 +1,3 @@
 # Todo
-1. Implement get orderable dates from backend
-2. Implement date navigation
+1. Use derived states (with useMemo) instead of two states
+2. Finish meal page logic
