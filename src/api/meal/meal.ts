@@ -14,3 +14,7 @@ export async function getDetailedMealData(_req: GetMealDetailedRequest): Promise
     ]
   }
 }
+
+export async function patchDetailedMealData(_req: PatchMealDetailedRequest) {
+  console.log(_req);
+}

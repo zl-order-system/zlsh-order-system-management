@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { Head } from "../components/Head";
 import { getUpcomingDates } from "../api/dates/dates";
 import { SetState } from "../util/types/types";
-import { getDetailedMealData } from "../api/meal/meal";
+import { getDetailedMealData, patchDetailedMealData } from "../api/meal/meal"
+import trashCanIcon from "../assets/pages/meal/trash-can.svg"
 
 function Meal() {
   const [modalDate, setModalDate] = useState<Date | null>(null);
@@ -44,31 +45,82 @@ function DetailsModal({date, setDate}: {date: Date | null, setDate: SetState<Dat
   const [nameField, setNameField] = useState("");
 
   useEffect(() => {
-    if (date == null) return;
+    if (date == null) {
+      setNumberField("");
+      setNameField("");
+      return;
+    }
     getDetailedMealData({date}).then(v => {
       setData(v);
       setWorkingData(new Map(Array.from(v.options, (value, index) => [index + 1, value])));
+      setNumberField((v.options.length + 1).toString())
     });
   }, [date]);
 
-  // useEffect(() => console.log(workingData), [workingData])
 
   if (date == null) return;
-  if (data == null) return;
+  if (data == undefined) return;
 
   function addItem() {
     if (numberField == "") return;
+
     let num = parseInt(numberField);
     if (workingData?.has(num)) return;
+
     const map = new Map<number, MealOption>();
     workingData?.forEach((v, k) => map.set(k, v));
+
     map.set(num, {
       name: nameField,
       schoolOnly: false,
     });
+
     setNumberField(v => (parseInt(v) + 1).toString());
     setNameField("");
     setWorkingData(map);
+  }
+
+  function removeItem(key: number) {
+    return () => {
+      if (workingData == undefined) return;
+
+      const map = new Map<number, MealOption>();
+      workingData?.forEach((v, k) => {
+        if (k == key) return;
+        map.set(k, v);
+      });
+
+      setWorkingData(map);
+    }
+  }
+
+  function setSchoolOnly(key: number) {
+    return (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (workingData == undefined) return;
+
+      let mealOption = workingData.get(key);
+      if (mealOption == undefined) return;
+
+      const map = new Map<number, MealOption>();
+      workingData?.forEach((v, k) => map.set(k, v));
+
+      map.set(key, {
+        name: mealOption.name,
+        schoolOnly: e.target.checked,
+      });
+
+      setWorkingData(map);
+    }
+  }
+
+  async function submit() {
+    if (workingData == undefined) return;
+    console.log(workingData);
+    const options = Array.from(workingData)
+      .sort((a, b) => a[0] - b[0])
+      .map(([_, v]) => v);
+    await patchDetailedMealData({options});
+    setDate(null);
   }
 
   const itemList: JSX.Element[] = [];
@@ -78,12 +130,12 @@ function DetailsModal({date, setDate}: {date: Date | null, setDate: SetState<Dat
         <p className="w-4">{k}</p>
         <span>{v.name}</span>
       </div>
-      <div className="flex gap-4">
+      <div className="flex gap-4 items-center">
         <div className="flex gap-2 justify-center items-center text-xl">
-          <input className="w-5 h-5" type="checkbox"></input>
+          <input className="w-5 h-5" checked={v.schoolOnly} onChange={setSchoolOnly(k)} type="checkbox"></input>
           <span className="text-lg text-[#565656]">無自備</span>
         </div>
-        <button>🗑️</button>
+        <button onClick={removeItem(k)} className="w-6 h-6"><img src={trashCanIcon}/></button>
       </div>
     </div>
   ));
@@ -105,7 +157,7 @@ function DetailsModal({date, setDate}: {date: Date | null, setDate: SetState<Dat
           </div>
         </div>
         <div className="flex gap-8">
-          <button className="text-[#00C0CC] font-extrabold text-2xl">確定</button>
+          <button onClick={submit} className="text-[#00C0CC] font-extrabold text-2xl">確定</button>
           <button onClick={() => setDate(null)} className="text-[#E2473D] font-extrabold text-2xl">取消</button>
         </div>
       </div>
