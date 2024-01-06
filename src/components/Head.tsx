@@ -37,12 +37,12 @@ export function DateSelector({selectedDate, setSelectedDate}: {selectedDate: Dat
   }, [])
 
   useEffect(() => {
-    if (dates == undefined) return;
+    if (dates === undefined) return;
     setSelectedDate(dates[dateID])
   }, [dates, dateID])
 
   function nextDate() {
-    if (dates == undefined) return;
+    if (dates === undefined) return;
     if (dateID + 1 >= dates.length) return;
     setDateID(v => v + 1);
   }

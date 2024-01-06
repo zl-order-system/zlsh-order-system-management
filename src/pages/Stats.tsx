@@ -73,11 +73,11 @@ function DetailsModal({detailsData, setDetailsData}: {detailsData: DetailsData, 
   const [data, setData] = useState<GetStatDetailedDataResponse>();
 
   useEffect(() => {
-    if (detailsData == null) return;
+    if (detailsData === null) return;
     getDetailedStatData({date: new Date(), mealID: detailsData.id}).then(v => setData(v));
   }, [detailsData]);
 
-  if (detailsData == null) return;
+  if (detailsData === null) return;
 
   return (
     <div className="fixed flex justify-around items-center inset-0 p-6 bg-black/30 backdrop-blur-sm">

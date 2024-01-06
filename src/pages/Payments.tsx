@@ -56,8 +56,8 @@ function SearchBar({setValue}: {setValue: SetState<string>}) {
 }
 
 function filterBySearchKeyword(keyword: string, tableData?: GetPaymentDataResponse) {
-  if (tableData == undefined) return undefined;
-  if (keyword == "") return tableData;
+  if (tableData === undefined) return undefined;
+  if (keyword === "") return tableData;
   return tableData.filter(v =>
     v.name.includes(keyword) ||
     v.mealName.includes(keyword) ||
