@@ -18,5 +18,6 @@ export type GetPaymentDataResponse = {
 
 export type patchPaymentApproveRequest = {
   date: Date,
-  id: number
+  id: number,
+  paid: boolean
 }

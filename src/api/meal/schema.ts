@@ -1,13 +1,14 @@
 type GetMealDetailedRequest = {
   date: Date
 }
-type GetMealDetailedResponse = MealData;
-
-type PatchMealDetailedRequest = MealData;
-
-type MealData = {
+type GetMealDetailedResponse = {
   options: MealOption[]
-}
+};
+
+type PatchMealDetailedRequest = {
+  date: Date,
+  options: MealOption[]
+};
 
 type MealOption = {
   name: string,
