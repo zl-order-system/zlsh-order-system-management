@@ -3,6 +3,6 @@ export enum PageRoutes {
   STATS = "/stats",
   PAYMENTS = "/payments",
   MEAL = "/meal",
-  ACCOUNTS = "/accounts",
+  // ACCOUNTS = "/accounts",
   MESSAGES = "/messages",
 }
