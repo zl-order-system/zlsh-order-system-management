@@ -3,11 +3,11 @@ type getMessageData_response = {
     classNumber : string,
 }
 
-type postMessageData_request = {
+type postConnection_request = {
     accessToken : string,
     clasNumber : string
 }
-type postMessageData_respones = {
+type postConnection_respones = {
     state : boolean, // 是否成功向line取得聊天室token
     connectState : boolean, // 已連動:true 未連動:false
     classNumber : string,
