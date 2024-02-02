@@ -23,6 +23,8 @@ function Messages() {
     const [componentsState, setComponentsState] = useState({
         loaderState : "hidden"
     })
+    const [toggleBtnState, settoggleBtnState] = useState(true)
+    const btnToggle = () => { settoggleBtnState( toggleBtnState? false: true ) }
     useEffect(()=>{
         if( haveCode ){
             setMessageData(true)
@@ -42,10 +44,12 @@ function Messages() {
         <div className="py-3.5 flex flex-col gap-[0.75rem]">
             <BackToHome/>
             <div className="px-[1rem]">
-                <HintUnconnected/>
+                { messageData["connectState"] &&  <HintConnected/>}
+                { messageData["connectState"] || <HintUnconnected/> }
             </div>
             <div className="px-[1rem]">
-                <NotConnectedBody/>
+                { messageData["connectState"] && toggleBtnState &&  <ConnectedBody toggleBtnState={toggleBtnState} btnToggle={btnToggle}/> }
+                { messageData["connectState"] && toggleBtnState || <NotConnectedBody messageData={messageData} btnToggle={btnToggle}/> }
             </div>
             <FullScreenLoading componentsState={componentsState.loaderState}>
                 <>連動中，請稍候</>
@@ -78,24 +82,24 @@ function FullScreenLoading({componentsState, children} : {componentsState: strin
         </div>
     )
 }
-
-function ConnectedBody(){
+function ConnectedBody({toggleBtnState, btnToggle}: {toggleBtnState: boolean, btnToggle: Function}){
     return (
         <div className="flex flex-row justify-between items-end">
             <div className="text-black text-[1.5rem] font-[700]">訊息設定</div>
-            <button className="text-[#0969DA] text-[1rem] font-[500] underline">查看連動教學</button>
+            { toggleBtnState && <button className="text-[#0969DA] text-[1rem] font-[500] underline" onClick={btnToggle}>查看連動教學</button> }
         </div>
     )
 }
 
-function NotConnectedBody(){
+function NotConnectedBody({messageData, btnToggle, toggleBtnState}: {messageData: object, btnToggle: Function, toggleBtnState: boolean}){
     return (
-        <Tut.body title="Line自動訊息設定教學">
+        <Tut.body title="Line自動訊息設定教學" messageData={messageData} btnToggle={btnToggle} toggleBtnState={toggleBtnState}>
             <Tut.div title="步驟一：">
                 <Tut.p>
                     點擊下方“與Line連動”按鈕，並依指示登入Line帳號，選擇要連動的班級群組，並按“同意並連動”
                 </Tut.p>
                 <Tut.oAuthBtn/>
+                { messageData["connectState"] && <div className="text-[#1F2328] text-[0.9rem] font-[500]">* 你已連動Line訊息，如需更改資料請重新進行</div> }
             </Tut.div>
             <Tut.div title="步驟二：">
                 <Tut.p>
@@ -107,10 +111,11 @@ function NotConnectedBody(){
 }
 
 const Tut = {
-    body: ({children, title}: {children: JSX.Element[] | JSX.Element, title: string}) => (
+    body: ({children, title, messageData, btnToggle, toggleBtnState}: {children: JSX.Element[] | JSX.Element, title: string, messageData: object, btnToggle: Function, toggleBtnState: boolean}) => (
         <div>
-            <div className="text-black text-[1.5rem] font-[700] mb-[0.6rem]">
-                {title}
+            <div className="flex flex-row justify-between">
+                <div className="text-black text-[1.5rem] font-[700] mb-[0.6rem]">{title}</div>
+                { messageData["connectState"] && !toggleBtnState &&  <button className="text-[#0969DA] text-[1rem] font-[500] underline" onClick={btnToggle}>查看訊息設定</button>}
             </div>
             <div className="w-full bg-[#B6B6B6] h-[1px] shadow-[0px_2px_4px_0px_rgba(0,0,0,0.25)] mb-[0.75rem]"></div>
             <div className="flex flex-col gap-[1.9rem]">

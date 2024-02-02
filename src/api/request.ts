@@ -20,13 +20,20 @@ async function doRequest(method: "GET" | "POST" | "PUT", url: string, data?:obje
 }
 export async function getMessagesData(){
     return new Promise((resolve, reject) => {
-        resolve("data_get")
+        resolve({
+            "connectState" : true,
+            "classNumber" : "109"
+        })
     })
     return doRequest("GET", domain + pages.message)
 }
 export async function postMessagesData(data: object){
-    // return new Promise((resolve, reject) => {
-    //     resolve("data_post")
-    // })
+    return new Promise((resolve, reject) => {
+        resolve({
+            "state" : true, // 是否成功向line取得聊天室token
+            "connectState" : true, // 已連動:true 未連動:false
+            "classNumber" : "109"
+        })
+    })
     return doRequest("POST", domain + pages.message, data)
 }
