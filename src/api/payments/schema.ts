@@ -16,7 +16,7 @@ export type GetPaymentDataResponse = {
   paid: boolean,
 }[]
 
-export type patchPaymentApproveRequest = {
+export type PatchPaymentApproveRequest = {
   date: Date,
   userID: number,
   paid: boolean

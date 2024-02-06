@@ -5,7 +5,7 @@ import { SetState } from "../util/types/types";
 import { GetPaymentDataResponse } from "../api/payments/schema";
 import { Column, TitleColumn } from "../components/Table";
 import { getPrice } from "../util/util";
-import { getPaymentData, patchPaymentApproveRequest } from "../api/payments/payments";
+import { getPaymentData, patchPaymentApprove } from "../api/payments/payments";
 
 function Payments() {
   const [searchText, setSearchText] = useState("");
@@ -21,9 +21,9 @@ function Payments() {
     setFilteredData(filterBySearchKeyword(searchText, paymentData));
   }, [searchText, paymentData])
 
-  function approve(id: number) {
+  function approve(userID: number) {
     return async () => {
-      await patchPaymentApproveRequest({id: id, date: selectedDate})
+      await patchPaymentApprove({userID: userID, date: selectedDate, paid: true})
       setPaymentData(await getPaymentData({date: selectedDate}));
     }
   }

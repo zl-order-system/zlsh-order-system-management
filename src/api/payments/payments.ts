@@ -1,4 +1,4 @@
-import { GetPaymentDataRequest, GetPaymentDataResponse, LunchBoxType, patchPaymentApproveRequest } from "./schema";
+import { GetPaymentDataRequest, GetPaymentDataResponse, LunchBoxType, PatchPaymentApproveRequest } from "./schema";
 
 let approved = new Set<number>;
 
@@ -34,6 +34,6 @@ export async function getPaymentData(_reqData: GetPaymentDataRequest): Promise<G
   return data;
 }
 
-export async function patchPaymentApproveRequest(reqData: patchPaymentApproveRequest) {
-  approved.add(reqData.id);
+export async function patchPaymentApprove(reqData: PatchPaymentApproveRequest) {
+  approved.add(reqData.userID);
 }
