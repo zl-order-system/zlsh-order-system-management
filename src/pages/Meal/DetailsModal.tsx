@@ -45,10 +45,11 @@ export function DetailsModal({date, setDate}: {date: Date | null, setDate: SetSt
 
   async function submit() {
     if (workingData === undefined) return;
+    if (date === null) return;
     const options = Array.from(workingData)
       .sort((a, b) => a[0] - b[0])
       .map(([_, v]) => v);
-    await patchDetailedMealData({options});
+    await patchDetailedMealData({options, date});
     setDate(null);
   }
 
