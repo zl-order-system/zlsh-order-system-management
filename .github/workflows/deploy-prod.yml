@@ -1,0 +1,32 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [ prod ]
+
+env:
+  BASE_URL: "/management"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install dependencies
+        run: npm install
+      - name: Build
+        run: |
+          export BASE_URL=${{ env.BASE_URL }}
+          npm run build
+      - name: Deploy
+        uses: cpina/github-action-push-to-another-repository@main
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        with:
+          source-directory: 'dist'
+          destination-github-username: 'zl-order-system'
+          destination-repository-name: 'zl-order-system.github.io'
+          user-email: example@example.com
+          target-branch: main
+          target-directory: management
+          create-target-branch-if-needed: true
