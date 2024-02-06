@@ -1,4 +1,4 @@
-import { BackToHome} from "../components/Head";
+import { BackToHome } from "../components/Head";
 import checkIcon from "../assets/pages/message/checkIcon.svg"
 import yellowHintIcon from "../assets/pages/message/yellowHint.svg"
 import Loader from "../components/loader/Loader";
@@ -19,12 +19,12 @@ const haveCode: boolean = pageURL.searchParams.get("code") != null ? true : fals
 
 
 function Messages() {
-    const [messageData, setMessageData] = useState(null)
+    const [messageData, setMessageData] = useState<any>(false)
     const [componentsState, setComponentsState] = useState({
         loaderState : "hidden"
     })
-    const [toggleBtnState, settoggleBtnState] = useState(true)
-    const btnToggle = () => { settoggleBtnState( toggleBtnState? false: true ) }
+    const [toggleBtnState, setToggleBtnState] = useState(true)
+    const btnToggle = () => { setToggleBtnState( toggleBtnState? false: true ) }
     useEffect(()=>{
         if( haveCode ){
             setMessageData(true)
@@ -49,7 +49,7 @@ function Messages() {
             </div>
             <div className="px-[1rem]">
                 { messageData["connectState"] && toggleBtnState &&  <ConnectedBody toggleBtnState={toggleBtnState} btnToggle={btnToggle}/> }
-                { messageData["connectState"] && toggleBtnState || <NotConnectedBody messageData={messageData} btnToggle={btnToggle}/> }
+                { messageData["connectState"] && toggleBtnState || <NotConnectedBody messageData={messageData} btnToggle={btnToggle} toggleBtnState={toggleBtnState}/> }
             </div>
             <FullScreenLoading componentsState={componentsState.loaderState}>
                 <>連動中，請稍候</>
@@ -82,7 +82,7 @@ function FullScreenLoading({componentsState, children} : {componentsState: strin
         </div>
     )
 }
-function ConnectedBody({toggleBtnState, btnToggle}: {toggleBtnState: boolean, btnToggle: Function}){
+function ConnectedBody({toggleBtnState, btnToggle}: {toggleBtnState: boolean, btnToggle: React.MouseEventHandler<HTMLButtonElement>}){
     return (
         <div className="flex flex-row justify-between items-end">
             <div className="text-black text-[1.5rem] font-[700]">訊息設定</div>
@@ -91,7 +91,7 @@ function ConnectedBody({toggleBtnState, btnToggle}: {toggleBtnState: boolean, bt
     )
 }
 
-function NotConnectedBody({messageData, btnToggle, toggleBtnState}: {messageData: object, btnToggle: Function, toggleBtnState: boolean}){
+function NotConnectedBody({messageData, btnToggle, toggleBtnState}: {messageData: any, btnToggle: React.MouseEventHandler<HTMLButtonElement>, toggleBtnState: boolean}){
     return (
         <Tut.body title="Line自動訊息設定教學" messageData={messageData} btnToggle={btnToggle} toggleBtnState={toggleBtnState}>
             <Tut.div title="步驟一：">
@@ -111,7 +111,7 @@ function NotConnectedBody({messageData, btnToggle, toggleBtnState}: {messageData
 }
 
 const Tut = {
-    body: ({children, title, messageData, btnToggle, toggleBtnState}: {children: JSX.Element[] | JSX.Element, title: string, messageData: object, btnToggle: Function, toggleBtnState: boolean}) => (
+    body: ({children, title, messageData, btnToggle, toggleBtnState}: {children: JSX.Element[] | JSX.Element, title: string, messageData: any, btnToggle: React.MouseEventHandler<HTMLButtonElement>, toggleBtnState: boolean}) => (
         <div>
             <div className="flex flex-row justify-between">
                 <div className="text-black text-[1.5rem] font-[700] mb-[0.6rem]">{title}</div>
