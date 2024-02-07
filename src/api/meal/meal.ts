@@ -1,3 +1,4 @@
+import { formatDate } from "../../util/util";
 import { HttpMethods, sendRequest } from "../request";
 
 export async function getDetailedMealData(req: GetMealDetailedRequest): Promise<GetMealDetailedResponse> {
@@ -16,7 +17,7 @@ export async function getDetailedMealData(req: GetMealDetailedRequest): Promise<
   // }
   // TODO: search p
   const params = new URLSearchParams();
-  params.append("date", req.date.toISOString());
+  params.append("date", formatDate(req.date));
   return sendRequest("/api/admin/meal/detailed", HttpMethods.GET)
 }
 

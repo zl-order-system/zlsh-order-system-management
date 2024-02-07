@@ -1,3 +1,4 @@
+import { formatDate } from "../../util/util";
 import { HttpMethods, sendRequest } from "../request";
 import { GetPaymentDataRequest, GetPaymentDataResponse, LunchBoxType, PatchPaymentApproveRequest } from "./schema";
 
@@ -34,7 +35,7 @@ export async function getPaymentData(req: GetPaymentDataRequest): Promise<GetPay
   // ];
   // return data;
   const params = new URLSearchParams();
-  params.append("date", req.date.toISOString())
+  params.append("date", formatDate(req.date))
   return sendRequest("/api/admin/payments", HttpMethods.GET, params);
 }
 

@@ -1,3 +1,4 @@
+import { formatDate } from "../../util/util";
 import { HttpMethods, sendRequest } from "../request";
 import { GetStatDataRequest, GetStatDataResponse, GetStatDetailedDataRequest, GetStatDetailedDataResponse } from "./schema";
 
@@ -56,7 +57,7 @@ export async function getStatData(req: GetStatDataRequest): Promise<GetStatDataR
   //   },
   // ]
   const params = new URLSearchParams();
-  params.append("date", req.date.toISOString());
+  params.append("date", formatDate(req.date));
   return sendRequest("/api/admin/stats", HttpMethods.GET, params);
 }
 
@@ -69,7 +70,7 @@ export async function getDetailedStatData(req: GetStatDetailedDataRequest): Prom
   //   personalLunchBox: [1, 5, 30]
   // }
   const params = new URLSearchParams();
-  params.append("date", req.date.toISOString());
+  params.append("date", formatDate(req.date));
   params.append("mealID", req.mealID.toString());
   return sendRequest("/api/admin/stats/detailed", HttpMethods.GET, params);
 }
