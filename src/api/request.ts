@@ -10,15 +10,14 @@ export enum HttpMethods {
     OPTIONS = "OPTIONS"
 }
 
-export async function sendRequest<T>(rawPath: string, method: HttpMethods, searchParams?: URLSearchParams, bodyObject?: T) {
+export async function sendRequest<T>(path: string, method: HttpMethods, searchParams?: URLSearchParams, bodyObject?: T) {
     const headers = {
         Authorization: `Bearer ${getToken()}`
     };
     const body = processBody(bodyObject);
-    const path = `${getAppConstants().backendHost}${rawPath}?${searchParams?.toString()}`;
-
     try {
-        const response = await fetch(getAppConstants().backendHost + path, {method, headers, body});
+
+        const response = await fetch(`${getAppConstants().backendHost}${path}?${searchParams?.toString()}`, {method, headers, body});
 
         if (!response.ok) {
             throw new Error(`Error fetching data: ${response.statusText}`);
