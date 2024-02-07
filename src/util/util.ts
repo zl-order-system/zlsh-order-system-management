@@ -11,4 +11,4 @@ export function getPrice(lunchBox: LunchBoxType) {
 
 export const getToken = () => localStorage.getItem('token');
 
-export const formatDate = (date: Date) => date.toLocaleDateString('en-US', { year: 'numeric', month: 'numeric', day: 'numeric' });
+export const formatDate = (date: Date) => date.toISOString().slice(0, 10);
