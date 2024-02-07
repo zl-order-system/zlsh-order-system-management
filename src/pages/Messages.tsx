@@ -3,7 +3,7 @@ import checkIcon from "../assets/pages/message/checkIcon.svg"
 import yellowHintIcon from "../assets/pages/message/yellowHint.svg"
 import Loader from "../components/loader/Loader";
 import {useEffect, useState } from "react";
-import { getMessagesData, postMessagesData } from "../api/request";
+import { getMessagesData, postMessagesData } from "../api/message/message";
 
 const getParams = {
     response_type : "code",

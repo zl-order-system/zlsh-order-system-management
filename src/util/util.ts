@@ -8,3 +8,5 @@ export function getPrice(lunchBox: LunchBoxType) {
       return 70;
   }
 }
+
+export const getToken = () => localStorage.getItem('token');
