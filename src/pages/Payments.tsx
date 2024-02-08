@@ -21,9 +21,9 @@ function Payments() {
     setFilteredData(filterBySearchKeyword(searchText, paymentData));
   }, [searchText, paymentData])
 
-  function approve(userID: number) {
+  function approve(userID: number, paid: boolean) {
     return async () => {
-      await patchPaymentApprove({userID: userID, date: selectedDate, paid: true})
+      await patchPaymentApprove({userID: userID, date: selectedDate, paid: paid})
       setPaymentData(await getPaymentData({date: selectedDate}));
     }
   }
@@ -61,18 +61,18 @@ function filterBySearchKeyword(keyword: string, tableData?: GetPaymentDataRespon
   return tableData.filter(v =>
     v.name.includes(keyword) ||
     v.mealName.includes(keyword) ||
-    v.lunchBox.includes(keyword) ||
+    v.lunchBoxType.includes(keyword) ||
     v.seatNumber.toString().includes(keyword)
   )
 }
 
-function Table({tableData, approve}: {tableData?: GetPaymentDataResponse, approve: ((id: number) => () => Promise<void>)}) {
+function Table({tableData, approve}: {tableData?: GetPaymentDataResponse, approve: ((userID: number, paid: boolean) => () => Promise<void>)}) {
   const titleCells: JSX.Element[] = [];
   const mealNameCells: JSX.Element[] = [];
   const priceCells: JSX.Element[] = [];
   const hasPaidCells: JSX.Element[] = [];
 
-  // TODO: Inplement onClick
+  // TODO: Implement onClick
   tableData?.forEach((v, i) => {
     titleCells.push(
       <span className="text-left text-black text-xl font-normal" key={i}>{v.name}</span>
@@ -81,14 +81,14 @@ function Table({tableData, approve}: {tableData?: GetPaymentDataResponse, approv
       <span className="text-center text-black text-xl font-normal" key={i}>{v.mealName}</span>
     );
     priceCells.push(
-      <span className="text-center text-black text-xl font-normal" key={i}>{getPrice(v.lunchBox)}元</span>
+      <span className="text-center text-black text-xl font-normal" key={i}>{getPrice(v.lunchBoxType)}元</span>
     );
 
     if (v.paid) hasPaidCells.push(
-      <span className="text-center text-neutral-400 text-xl font-bold" key={i}>已繳費</span>
+      <button className="text-center text-neutral-400 text-xl font-bold" onClick={approve(v.userID, false)} key={i}>已繳費</button>
     );
     else hasPaidCells.push(
-      <button className="text-center text-[#00C0CC] text-xl font-bold" onClick={approve(v.id)} key={i}>註記繳費</button>
+      <button className="text-center text-[#00C0CC] text-xl font-bold" onClick={approve(v.userID, true)} key={i}>註記繳費</button>
     );
   });
 

@@ -10,26 +10,31 @@ export enum HttpMethods {
     OPTIONS = "OPTIONS"
 }
 
-export async function sendRequest<T>(path: string, method: HttpMethods, searchParams?: URLSearchParams, bodyObject?: T) {
+export async function sendRequest<T>(path: string, method: HttpMethods, searchParams?: URLSearchParams, bodyObject?: unknown): Promise<T> {
     const headers = {
-        Authorization: `Bearer ${getToken()}`
+        "Authorization": `Bearer ${getToken()}`,
+        "Content-Type": "application/json"
     };
     const body = processBody(bodyObject);
+    let url = `${getAppConstants().backendHost}${path}`
+
+    if (searchParams !== undefined)
+        url += `?${searchParams.toString()}`
+
+    const response = await fetch(url, {method, headers, body});
+
+    if (!response.ok) {
+        throw new Error(`Error fetching data: ${response.statusText}`);
+    }
+
     try {
-
-        const response = await fetch(`${getAppConstants().backendHost}${path}?${searchParams?.toString()}`, {method, headers, body});
-
-        if (!response.ok) {
-            throw new Error(`Error fetching data: ${response.statusText}`);
-        }
-
         return await response.json();
-    } catch (error) {
-        console.error('Error:', error);
+    } catch {
+        return Promise.reject();
     }
 }
 
-function processBody<T>(bodyObject?: T) {
+function processBody(bodyObject?: unknown) {
     if (bodyObject === undefined)
         return undefined
     else

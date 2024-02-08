@@ -41,5 +41,8 @@ export async function getPaymentData(req: GetPaymentDataRequest): Promise<GetPay
 
 export async function patchPaymentApprove(req: PatchPaymentApproveRequest) {
   // approved.add(reqData.userID);
-  return sendRequest("/api/admin/payments", HttpMethods.PATCH, undefined, req);
+  return sendRequest<undefined>("/api/admin/payments", HttpMethods.PATCH, undefined, {
+    ...req,
+    date: formatDate(req.date)
+  });
 }

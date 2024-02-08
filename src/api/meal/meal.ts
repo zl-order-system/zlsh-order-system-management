@@ -18,7 +18,7 @@ export async function getDetailedMealData(req: GetMealDetailedRequest): Promise<
   // TODO: search p
   const params = new URLSearchParams();
   params.append("date", formatDate(req.date));
-  return sendRequest("/api/admin/meal/detailed", HttpMethods.GET)
+  return sendRequest("/api/admin/meal/detailed", HttpMethods.GET, params)
 }
 
 export async function patchDetailedMealData(req: PatchMealDetailedRequest) {

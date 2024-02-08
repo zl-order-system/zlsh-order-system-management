@@ -33,7 +33,7 @@ export function DateSelector({selectedDate, setSelectedDate}: {selectedDate: Dat
   const [dateID, setDateID] = useState(0);
 
   useEffect(() => {
-    getUpcomingDates().then(v => setDates(v.dates))
+    getUpcomingDates().then(v => setDates(v.map(s => new Date(s))));
   }, [])
 
   useEffect(() => {
@@ -48,6 +48,7 @@ export function DateSelector({selectedDate, setSelectedDate}: {selectedDate: Dat
   }
 
   function prevDate() {
+    if (dates === undefined) return;
     if (dateID - 1 < 0) return;
     setDateID(v => v - 1);
   }

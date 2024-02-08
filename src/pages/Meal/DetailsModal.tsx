@@ -14,6 +14,8 @@ export function DetailsModal({date, setDate}: {date: Date | null, setDate: SetSt
 
   useEffect(() => {
     if (date === null) {
+      setData(undefined);
+      setWorkingData(undefined);
       setNumberField("");
       setNameField("");
       return;
@@ -43,13 +45,13 @@ export function DetailsModal({date, setDate}: {date: Date | null, setDate: SetSt
     setNameField("");
   }
 
-  async function submit() {
+  function submit() {
     if (workingData === undefined) return;
     if (date === null) return;
     const options = Array.from(workingData)
       .sort((a, b) => a[0] - b[0])
       .map(([_, v]) => v);
-    await patchDetailedMealData({options, date});
+    patchDetailedMealData({options, date});
     setDate(null);
   }
 

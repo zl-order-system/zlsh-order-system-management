@@ -1,3 +1,1 @@
-export type GetUpcomingDatesResponse = {
-  dates: Date[],
-}
+export type GetUpcomingDatesResponse = Date[];

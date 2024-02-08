@@ -8,10 +8,10 @@ export type GetPaymentDataRequest = {
 }
 
 export type GetPaymentDataResponse = {
-  id: number,
+  userID: number,
   name: string,
   seatNumber: number,
-  lunchBox: LunchBoxType,
+  lunchBoxType: LunchBoxType,
   mealName: string,
   paid: boolean,
 }[]

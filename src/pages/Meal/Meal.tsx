@@ -21,7 +21,7 @@ function List({setModalDate}: {setModalDate: SetState<Date | null>}) {
   const [dates, setDates] = useState<Date[]>();
 
   useEffect(() => {
-    getUpcomingDates().then(v => setDates(v.dates))
+    getUpcomingDates().then(v => setDates(v.map(s => new Date(s))))
   }, [])
 
   return (
