@@ -27,7 +27,7 @@ function Home() {
           <img src={accountsIcon}/>
           帳號管理
         </PageLink> */}
-        <PageLink linkTo={PageRoutes.MESSAGES}>
+        <PageLink disabled linkTo={PageRoutes.MESSAGES}>
           <img src={messagesIcon}/>
           訊息管理
         </PageLink>
@@ -36,7 +36,15 @@ function Home() {
   );
 }
 
-function PageLink({children, linkTo}: {children: [React.ReactNode, string]; linkTo: To}) {
+function PageLink({children, linkTo, disabled}: {children: [React.ReactNode, string]; linkTo: To, disabled?: true}) {
+  if (disabled)
+    return (
+      <div className="flex flex-col gap-3 py-5 mx-5 items-center grayscale">
+        <div className="w-32 h-32 rounded-[1.75rem] bg-[#D5EFF9] flex justify-center items-center">{children[0]}</div>
+        <div className="text-gray-400 text-xl font-semibold text-center">{children[1]}</div>
+      </div>
+    )
+
   return (
     <Link to={linkTo} className="flex flex-col gap-3 py-5 mx-5 items-center">
       <div className="w-32 h-32 rounded-[1.75rem] bg-[#D5EFF9] flex justify-center items-center">{children[0]}</div>
