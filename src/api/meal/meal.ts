@@ -31,11 +31,11 @@ export async function getDetailedMealData(req: GetMealDetailedRequest): Promise<
 
   handleResponseCode(response);
 
-  return await parseResponseJsonOrThrow(response);
+  return await parseResponseJsonOrThrow(response, false);
 }
 
 export async function updateDetailedMealData(req: UpdateMealDetailedRequest) {
-  sendRequest("/api/admin/meal/detailed", HttpMethods.PUT, undefined, {
+  sendRequest("/api/admin/meal/detailed", HttpMethods.PUT, true, undefined, {
     ...req,
     date: formatDate(req.date)
   });

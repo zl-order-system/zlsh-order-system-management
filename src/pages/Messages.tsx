@@ -39,7 +39,7 @@ function Messages() {
             })
         }
     }, [])
-    if (messageData == null) return <Loader state={"open"}/>
+    if (messageData === null) return <Loader state={"open"}/>
     return(
         <div className="py-3.5 flex flex-col gap-[0.75rem]">
             <BackToHome/>

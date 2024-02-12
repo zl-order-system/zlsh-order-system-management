@@ -58,7 +58,7 @@ export async function getStatData(req: GetStatDataRequest): Promise<GetStatDataR
   // ]
   const params = new URLSearchParams();
   params.append("date", formatDate(req.date));
-  return sendRequest("/api/admin/stats", HttpMethods.GET, params);
+  return sendRequest("/api/admin/stats", HttpMethods.GET, false, params);
 }
 
 // eslint-disable-next-line no-unused-vars
@@ -72,5 +72,5 @@ export async function getDetailedStatData(req: GetStatDetailedDataRequest): Prom
   const params = new URLSearchParams();
   params.append("date", formatDate(req.date));
   params.append("mealID", req.mealID.toString());
-  return sendRequest("/api/admin/stats/detailed", HttpMethods.GET, params);
+  return sendRequest("/api/admin/stats/detailed", HttpMethods.GET, false, params);
 }

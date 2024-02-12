@@ -3,6 +3,7 @@ export type GetStatDataRequest = {
 }
 
 export type GetStatDataResponse = {
+  id: number,
   name: string,
   personalBoxCount: number,
   schoolBoxCount: number,

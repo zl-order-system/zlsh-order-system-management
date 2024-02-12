@@ -10,7 +10,7 @@ export enum HttpMethods {
     OPTIONS = "OPTIONS"
 }
 
-export async function sendRequest<T>(path: string, method: HttpMethods, searchParams?: URLSearchParams, bodyObject?: unknown): Promise<T> {
+export async function sendRequest<T>(path: string, method: HttpMethods, noResponse: boolean, searchParams?: URLSearchParams, bodyObject?: unknown): Promise<T> {
     const body = processBody(bodyObject);
     const headers = {
         "Authorization": `Bearer ${getToken()}`,
@@ -26,7 +26,7 @@ export async function sendRequest<T>(path: string, method: HttpMethods, searchPa
     const response = await fetch(url, {method, headers, body});
     handleResponseCode(response);
 
-    return await parseResponseJsonOrThrow(response);
+    return await parseResponseJsonOrThrow(response, noResponse);
 }
 
 export function handleResponseCode(response: Response) {
@@ -51,7 +51,8 @@ function processBody(bodyObject?: unknown) {
         return JSON.stringify(bodyObject)
 }
 
-export async function parseResponseJsonOrThrow(response: Response) {
+export async function parseResponseJsonOrThrow(response: Response, noResponse: boolean) {
+    if (noResponse) return;
     try {
         return await response.json();
     } catch {

@@ -9,11 +9,12 @@ import { getPaymentData, patchPaymentApprove } from "../api/payments/payments";
 
 function Payments() {
   const [searchText, setSearchText] = useState("");
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [paymentData, setPaymentData] = useState<GetPaymentDataResponse>();
   const [filteredData, setFilteredData] = useState<GetPaymentDataResponse>();
 
   useEffect(()=> {
+    if (selectedDate === null) return;
     getPaymentData({date: selectedDate}).then(v => setPaymentData(v));
   }, [selectedDate]);
 
@@ -23,6 +24,7 @@ function Payments() {
 
   function approve(userID: number, paid: boolean) {
     return async () => {
+      if (selectedDate === null) return;
       await patchPaymentApprove({userID: userID, date: selectedDate, paid: paid})
       setPaymentData(await getPaymentData({date: selectedDate}));
     }

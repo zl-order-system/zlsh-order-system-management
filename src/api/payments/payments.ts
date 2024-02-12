@@ -36,12 +36,12 @@ export async function getPaymentData(req: GetPaymentDataRequest): Promise<GetPay
   // return data;
   const params = new URLSearchParams();
   params.append("date", formatDate(req.date))
-  return sendRequest("/api/admin/payments", HttpMethods.GET, params);
+  return sendRequest("/api/admin/payments", HttpMethods.GET, false, params);
 }
 
 export async function patchPaymentApprove(req: PatchPaymentApproveRequest) {
   // approved.add(reqData.userID);
-  return sendRequest<undefined>("/api/admin/payments", HttpMethods.PATCH, undefined, {
+  return sendRequest<undefined>("/api/admin/payments", HttpMethods.PATCH, true, undefined, {
     ...req,
     date: formatDate(req.date)
   });

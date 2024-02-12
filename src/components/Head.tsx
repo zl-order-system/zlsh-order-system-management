@@ -7,6 +7,7 @@ import { getUpcomingDates } from "../api/dates/dates";
 import leftArrowIcon from "../assets/components/head/left-arrow-thick.svg";
 import leftTriangleIcon from "../assets/components/head/left-triangle.svg";
 import rightTriangleIcon from "../assets/components/head/right-triangle.svg";
+import { formatDatePretty } from "../pages/Meal/util";
 
 export function Head({children}: {children?: JSX.Element}) {
   return (
@@ -28,7 +29,7 @@ export function BackToHome() {
   )
 }
 
-export function DateSelector({selectedDate, setSelectedDate}: {selectedDate: Date, setSelectedDate: SetState<Date>}) {
+export function DateSelector({selectedDate, setSelectedDate}: {selectedDate: Date | null, setSelectedDate: SetState<Date | null>}) {
   const [dates, setDates] = useState<Date[]>();
   const [dateID, setDateID] = useState(0);
 
@@ -42,24 +43,30 @@ export function DateSelector({selectedDate, setSelectedDate}: {selectedDate: Dat
   }, [dates, dateID])
 
   function nextDate() {
+    if (selectedDate === null) return;
     if (dates === undefined) return;
     if (dateID + 1 >= dates.length) return;
     setDateID(v => v + 1);
   }
 
   function prevDate() {
+    if (selectedDate === null) return;
     if (dates === undefined) return;
     if (dateID - 1 < 0) return;
     setDateID(v => v - 1);
   }
 
+  let displayDate = "正在獲取日期";
+  if (selectedDate !== null)
+    displayDate = formatDatePretty(selectedDate);
+
   return (
     <div className="flex w-100 pt-2 px-6 justify-between items-center">
       <button onClick={prevDate}><img src={leftTriangleIcon}/></button>
-      <div><span className="text-center text-black text-2xl font-medium">{formatDate(selectedDate)}</span></div>
+      <div><span className="text-center text-black text-2xl font-medium">{displayDate}</span></div>
       <button onClick={nextDate}><img src={rightTriangleIcon}/></button>
     </div>
   )
 }
 
-const formatDate = (date: Date) => `${date.getMonth() + 1}月${date.getDate()}日 ${new Intl.DateTimeFormat('zh-TW', { weekday: 'long' }).format(date)}`;
+// const formatDate = (date: Date) => `${date.getMonth() + 1}月${date.getDate()}日 ${new Intl.DateTimeFormat('zh-TW', { weekday: 'long' }).format(date)}`;

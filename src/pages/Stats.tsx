@@ -14,16 +14,17 @@ type DetailsData = {
 function Stats() {
   const [statData, setStatData] = useState<GetStatDataResponse>();
   const [detailsData, setDetailsData] = useState<DetailsData>(null);
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   useEffect(()=> {
+    if (selectedDate === null) return;
     getStatData({date: selectedDate}).then(v => setStatData(v));
   }, [selectedDate]);
 
   return (
     <div className="flex flex-col w-100 pb-4 gap-4">
       {/* {detailsData != null && <button onClick={() => setDetailsData(null)}>Modal Placeholder</button>} */}
-      <DetailsModal detailsData={detailsData} setDetailsData={setDetailsData}/>
+      <DetailsModal selectedDate={selectedDate} detailsData={detailsData} setDetailsData={setDetailsData}/>
       <Head>
         <DateSelector selectedDate={selectedDate} setSelectedDate={setSelectedDate}/>
       </Head>
@@ -38,18 +39,18 @@ function Table({tableData, setDetailsData}: {tableData?: GetStatDataResponse, se
   const personalBoxCells: JSX.Element[] = [];
   const schoolBoxCells: JSX.Element[] = [];
 
-  // TODO: Inplement onClick
+  // TODO: Implement onClick
   tableData?.forEach((v, i) => {
     titleCells.push(
-      <button onClick={() => setDetailsData({id: i, name: v.name})} className="text-left text-black text-xl font-normal" key={i}>
-        {(i + 1).toString() + ". " + v.name}
+      <button onClick={() => setDetailsData({id: v.id, name: v.name})} className="text-left text-black text-xl font-normal" key={i}>
+        {(v.id + 1).toString() + ". " + v.name}
       </button>
     );
     personalBoxCells.push(
-      <button onClick={() => setDetailsData({id: i, name: v.name})} className="text-center text-black text-xl font-normal" key={i}>{v.personalBoxCount}人</button>
+      <button onClick={() => setDetailsData({id: v.id, name: v.name})} className="text-center text-black text-xl font-normal" key={i}>{v.personalBoxCount}人</button>
     );
     schoolBoxCells.push(
-      <button onClick={() => setDetailsData({id: i, name: v.name})} className="text-center text-black text-xl font-normal" key={i}>{v.schoolBoxCount}人</button>
+      <button onClick={() => setDetailsData({id: v.id, name: v.name})} className="text-center text-black text-xl font-normal" key={i}>{v.schoolBoxCount}人</button>
     );
   });
 
@@ -69,12 +70,13 @@ function Table({tableData, setDetailsData}: {tableData?: GetStatDataResponse, se
 }
 
 // Details Modal
-function DetailsModal({detailsData, setDetailsData}: {detailsData: DetailsData, setDetailsData: SetState<DetailsData>}) {
+function DetailsModal({selectedDate, detailsData, setDetailsData}: {selectedDate: Date | null, detailsData: DetailsData, setDetailsData: SetState<DetailsData>}) {
   const [data, setData] = useState<GetStatDetailedDataResponse>();
 
   useEffect(() => {
     if (detailsData === null) return;
-    getDetailedStatData({date: new Date(), mealID: detailsData.id}).then(v => setData(v));
+    if (selectedDate === null) return;
+    getDetailedStatData({date: selectedDate, mealID: detailsData.id}).then(v => setData(v));
   }, [detailsData]);
 
   if (detailsData === null) return;
@@ -85,9 +87,9 @@ function DetailsModal({detailsData, setDetailsData}: {detailsData: DetailsData, 
         <h2 className="text-center mb-2 text-3xl font-normal">{detailsData.name}</h2>
         <div className="flex flex-col text-left w-full">
           <h3 className="text-left text-neutral-600 text-xl font-bold">自備餐盒</h3>
-          <p className="text-left text-2xl">{data?.personalLunchBox.map(v => v + ", ")}</p>
+          <p className="text-left text-2xl">{data?.personalLunchBox.map(v => v + ", ").toString().slice(0, -2)}</p>
           <h3 className="text-left text-neutral-600 text-xl font-bold">學校餐盒</h3>
-          <p className="text-left text-2xl">{data?.schoolLunchBox.map(v => v + ", ")}</p>
+          <p className="text-left text-2xl">{data?.schoolLunchBox.map(v => v + ", ").toString().slice(0, -2)}</p>
         </div>
         <button onClick={() => setDetailsData(null)} className="text-[#00C0CC] font-extrabold text-2xl">關閉</button>
       </div>
