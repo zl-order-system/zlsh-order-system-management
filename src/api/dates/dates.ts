@@ -7,5 +7,5 @@ export async function getUpcomingDates(): Promise<GetUpcomingDatesResponse> {
   // return {
   //   dates: [new Date("2023-08-29"), new Date("2023-08-31"), new Date("2023-09-1"), new Date("2023-09-2"), new Date("2023-09-4")]
   // }
-  return sendRequest<GetUpcomingDatesResponse>("/api/admin/upcoming-dates", HttpMethods.GET)
+  return sendRequest<GetUpcomingDatesResponse>("/api/admin/upcoming-dates", HttpMethods.GET, false)
 }
