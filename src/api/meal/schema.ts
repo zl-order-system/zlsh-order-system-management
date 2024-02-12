@@ -5,7 +5,7 @@ type GetMealDetailedResponse = {
   options: MealOption[]
 };
 
-type PatchMealDetailedRequest = {
+type UpdateMealDetailedRequest = {
   date: Date,
   options: MealOption[]
 };

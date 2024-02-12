@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getDetailedMealData, patchDetailedMealData } from "../../api/meal/meal"
+import { getDetailedMealData, updateDetailedMealData } from "../../api/meal/meal"
 import trashCanIcon from "../../assets/pages/meal/trash-can.svg"
 import { SetState } from "../../util/types/types";
 import { formatDate } from "./util";
@@ -51,7 +51,7 @@ export function DetailsModal({date, setDate}: {date: Date | null, setDate: SetSt
     const options = Array.from(workingData)
       .sort((a, b) => a[0] - b[0])
       .map(([_, v]) => v);
-    patchDetailedMealData({options, date});
+    updateDetailedMealData({options, date});
     setDate(null);
   }
 

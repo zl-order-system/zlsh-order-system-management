@@ -1,5 +1,6 @@
-import { formatDate } from "../../util/util";
-import { HttpMethods, sendRequest } from "../request";
+import { formatDate, getToken } from "../../util/util";
+import { HttpMethods, handleResponseCode, parseResponseJsonOrThrow, sendRequest } from "../request";
+import getAppConstants from "../../util/AppConstants"
 
 export async function getDetailedMealData(req: GetMealDetailedRequest): Promise<GetMealDetailedResponse> {
   // await(t => new Promise(r => setTimeout(r, t)))(200);
@@ -15,12 +16,24 @@ export async function getDetailedMealData(req: GetMealDetailedRequest): Promise<
   //     },
   //   ]
   // }
-  // TODO: search p
+
   const params = new URLSearchParams();
   params.append("date", formatDate(req.date));
-  return sendRequest("/api/admin/meal/detailed", HttpMethods.GET, params)
+  const headers = {
+    "Authorization": `Bearer ${getToken()}`,
+    "Content-Type": "application/json"
+  };
+
+  const response = await fetch(`${getAppConstants().backendHost}/api/admin/meal/detailed?${params.toString()}`, {method: HttpMethods.GET, headers});
+
+  if (response.status == 404)
+    return {options: []}
+
+  handleResponseCode(response);
+
+  return await parseResponseJsonOrThrow(response);
 }
 
-export async function patchDetailedMealData(req: PatchMealDetailedRequest) {
-  return sendRequest("/api/admin/meal/detailed", HttpMethods.PATCH, undefined, req);
+export async function updateDetailedMealData(req: UpdateMealDetailedRequest) {
+  return sendRequest("/api/admin/meal/detailed", HttpMethods.PUT, undefined, req);
 }

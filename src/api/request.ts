@@ -26,14 +26,10 @@ export async function sendRequest<T>(path: string, method: HttpMethods, searchPa
     const response = await fetch(url, {method, headers, body});
     handleResponseCode(response);
 
-    try {
-        return await response.json();
-    } catch {
-        return Promise.reject();
-    }
+    return await parseResponseJsonOrThrow(response);
 }
 
-function handleResponseCode(response: Response) {
+export function handleResponseCode(response: Response) {
     switch (response.status) {
         case 200:
         case 204:
@@ -53,4 +49,12 @@ function processBody(bodyObject?: unknown) {
         return undefined
     else
         return JSON.stringify(bodyObject)
+}
+
+export async function parseResponseJsonOrThrow(response: Response) {
+    try {
+        return await response.json();
+    } catch {
+        return Promise.reject();
+    }
 }
