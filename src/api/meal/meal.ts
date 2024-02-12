@@ -27,7 +27,7 @@ export async function getDetailedMealData(req: GetMealDetailedRequest): Promise<
   const response = await fetch(`${getAppConstants().backendHost}/api/admin/meal/detailed?${params.toString()}`, {method: HttpMethods.GET, headers});
 
   if (response.status == 404)
-    return {options: []}
+    return {options: [], mutable: true}
 
   handleResponseCode(response);
 
