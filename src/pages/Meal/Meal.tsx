@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Head } from "../../components/Head";
 import { SetState } from "../../util/types/types";
 import { DetailsModal } from "./DetailsModal";
-import { formatDate, getDatesInMonthAfterDate } from "./util";
+import { formatDatePretty, getDatesInMonthAfterDate } from "./util";
 
 function Meal() {
   const [modalDate, setModalDate] = useState<Date | null>(null);
@@ -27,7 +27,7 @@ function List({setModalDate}: {setModalDate: SetState<Date | null>}) {
     <ul className="flex flex-col gap-4 py-4">
       {dates?.map((v, i) =>
         <li className="flex justify-between px-6" key={i}>
-          <span className="text-xl">{formatDate(v)}</span>
+          <span className="text-xl">{formatDatePretty(v)}</span>
           <button onClick={() => setModalDate(v)} className="text-xl text-[#00C0CC] font-semibold">查看</button>
         </li>
       )}

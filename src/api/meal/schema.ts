@@ -2,6 +2,7 @@ type GetMealDetailedRequest = {
   date: Date
 }
 type GetMealDetailedResponse = {
+  mutable: boolean,
   options: MealOption[]
 };
 

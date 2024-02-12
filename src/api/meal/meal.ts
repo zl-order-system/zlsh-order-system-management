@@ -35,5 +35,8 @@ export async function getDetailedMealData(req: GetMealDetailedRequest): Promise<
 }
 
 export async function updateDetailedMealData(req: UpdateMealDetailedRequest) {
-  return sendRequest("/api/admin/meal/detailed", HttpMethods.PUT, undefined, req);
+  sendRequest("/api/admin/meal/detailed", HttpMethods.PUT, undefined, {
+    ...req,
+    date: formatDate(req.date)
+  });
 }

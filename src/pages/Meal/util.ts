@@ -1,6 +1,6 @@
 import { range } from "../../util/fp";
 
-export const formatDate = (date: Date) => `${date.getMonth() + 1}月${date.getDate()}日`;
+export const formatDatePretty = (date: Date) => `${date.getMonth() + 1}月${date.getDate()}日`;
 
 export function getDatesInMonthAfterDate(date: Date) {
     const year = date.getFullYear();
