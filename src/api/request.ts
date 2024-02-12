@@ -1,4 +1,4 @@
-import { getToken } from "../util/util";
+import { getToken, redirectToLoginPage, redirectToMainApp } from "../util/util";
 import getAppConstants from "../util/AppConstants"
 
 export enum HttpMethods {
@@ -40,9 +40,8 @@ function handleResponseCode(response: Response) {
             return;
         case 401:
         case 403:
-            const win: Window = window;
-            console.log("REDIRECT - RESCODE")
-            // win.location = "https://zl-order-system.github.io/staging/app/#/login";
+            console.log("Redirecting to Main App - No Sufficient Permissions");
+            redirectToMainApp(window);
             break;
         default:
             throw new Error(`Error fetching data: ${response.statusText}`);

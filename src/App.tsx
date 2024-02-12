@@ -6,7 +6,7 @@ import Payments from "./pages/Payments";
 import Meal from "./pages/Meal";
 import Messages from "./pages/Messages";
 import { useEffect } from "react";
-import { getToken } from "./util/util";
+import { getToken, redirectToLoginPage } from "./util/util";
 
 function App() {
   return (
@@ -28,9 +28,8 @@ function App() {
 function TokenManager() {
   useEffect(() => {
     if (getToken() !== null && getToken() !== "") return;
-    const win: Window = window;
-    console.log("REDIRECT - TOKEN")
-    // win.location = "https://zl-order-system.github.io/staging/app/#/login";
+    console.log("Redirecting to Login Page - Token Not Found");
+    redirectToLoginPage(window);
   }, [])
 
   return <></>

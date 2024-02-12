@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { Head } from "../../components/Head";
-import { getUpcomingDates } from "../../api/dates/dates";
 import { SetState } from "../../util/types/types";
 import { DetailsModal } from "./DetailsModal";
-import { formatDate } from "./util";
+import { formatDate, getDatesInMonthAfterDate } from "./util";
 
 function Meal() {
   const [modalDate, setModalDate] = useState<Date | null>(null);
@@ -21,7 +20,7 @@ function List({setModalDate}: {setModalDate: SetState<Date | null>}) {
   const [dates, setDates] = useState<Date[]>();
 
   useEffect(() => {
-    getUpcomingDates().then(v => setDates(v.map(s => new Date(s))))
+    setDates(getDatesInMonthAfterDate(new Date()))
   }, [])
 
   return (
