@@ -6,6 +6,7 @@ on:
 
 env:
   BASE_URL: "/management"
+  ORDER_SYSTEM_PROD: true
 
 jobs:
   build:
@@ -17,6 +18,7 @@ jobs:
       - name: Build
         run: |
           export BASE_URL=${{ env.BASE_URL }}
+          export ORDER_SYSTEM_PROD=${{ env.ORDER_SYSTEM_PROD }}
           npm run build
       - name: Deploy
         uses: cpina/github-action-push-to-another-repository@main
