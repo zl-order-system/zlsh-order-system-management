@@ -1,5 +1,5 @@
 import { getToken, redirectToLoginPage, redirectToMainApp } from "../util/util";
-import getAppConstants from "../util/AppConstants"
+import appConstants from "../util/AppConstants"
 
 export enum HttpMethods {
     GET = "GET",
@@ -17,7 +17,7 @@ export async function sendRequest<T>(path: string, method: HttpMethods, noRespon
         "Content-Type": "application/json"
     };
     // Url
-    let url = `${getAppConstants().backendHost}${path}`
+    let url = `${appConstants.backendHost}${path}`
     // Add search params if exist
     if (searchParams !== undefined)
         url += `?${searchParams.toString()}`

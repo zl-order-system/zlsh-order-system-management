@@ -7,7 +7,7 @@ import Meal from "./pages/Meal";
 import Messages from "./pages/Messages";
 import { useEffect, useRef, useState } from "react";
 import { getToken, redirectToLoginPage } from "./util/util";
-import getAppConstants from "./util/AppConstants"
+import appConstants from "./util/AppConstants"
 
 function App() {
   const [roles, setRoles] = useState<string[]>([]);
@@ -21,7 +21,7 @@ function App() {
   useEffect(() => {
     (async function() {
       // setRoles(await (await fetch(`${getAppConstants().backendHost}/api/user/role`)).json());
-      setRoles(await (await fetch(`${getAppConstants().backendHost}/api/user/roles`, {headers: {"Authorization": `Bearer ${getToken()}`}})).json());
+      setRoles(await (await fetch(`${appConstants.backendHost}/api/user/roles`, {headers: {"Authorization": `Bearer ${getToken()}`}})).json());
     })()
   }, [])
 
