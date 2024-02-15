@@ -1,4 +1,5 @@
 import { LunchBoxType } from "../api/payments/schema";
+import appConstants from "./AppConstants";
 
 export function getPrice(lunchBox: LunchBoxType) {
   switch (lunchBox) {
@@ -13,6 +14,6 @@ export const getToken = () => localStorage.getItem('token');
 
 export const formatDate = (date: Date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
 
-export const redirectToLoginPage = (win: Window) => win.location = "https://zl-order-system.github.io/staging/app/#/login"
+export const redirectToMainApp = (win: Window) => win.location = appConstants.mainAppURL
 
-export const redirectToMainApp = (win: Window) => win.location = "https://zl-order-system.github.io/staging/app/"
+export const redirectToLoginPage = (win: Window) => win.location = `${appConstants.mainAppURL}#/login`

@@ -7,6 +7,7 @@ on:
 env:
   BASE_URL: "/management"
   BACKEND_HOST: "https://order-system.octoberserver.net"
+  MAIN_APP_URL: "https://zl-order-system.github.io/app/"
 
 jobs:
   build:
@@ -19,6 +20,7 @@ jobs:
         run: |
           export BASE_URL=${{ env.BASE_URL }}
           export BACKEND_HOST=${{ env.BACKEND_HOST }}
+          export MAIN_APP_URL=${{ env.MAIN_APP_URL }}
           npm run build
       - name: Deploy
         uses: cpina/github-action-push-to-another-repository@main
