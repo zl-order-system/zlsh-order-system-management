@@ -1,26 +1,31 @@
-import { DateSelector, Head } from "../components/Head";
 import searchIcon from "../assets/pages/payments/search-icon.svg";
-import { useEffect, useState } from "react";
+import lockedIcon from "../assets/pages/payments/lock/locked.svg";
+import unlockedIcon from "../assets/pages/payments/lock/unlocked.svg";
+import { DateSelector, Head } from "../components/Head";
+import { useEffect, useMemo, useReducer, useState } from "react";
 import { SetState } from "../util/types/types";
-import { GetPaymentDataResponse } from "../api/payments/schema";
+import { GetPaymentDataResponse, PaymentDataItem } from "../api/payments/schema";
 import { Column, TitleColumn } from "../components/Table";
 import { getPrice } from "../util/util";
 import { getPaymentData, patchPaymentApprove } from "../api/payments/payments";
+import { lockOrderingAndPayments } from "../api/dates/dates";
+
+type ApproveFunc = ((userID: number, paid: boolean) => () => Promise<void>);
 
 function Payments() {
   const [searchText, setSearchText] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [paymentData, setPaymentData] = useState<GetPaymentDataResponse>();
-  const [filteredData, setFilteredData] = useState<GetPaymentDataResponse>();
+
+  const filteredData = useMemo<PaymentDataItem[]>(() =>  {
+    if (paymentData === undefined) return [];
+    return filterBySearchKeyword(searchText, paymentData.data);
+  }, [searchText, paymentData]);
 
   useEffect(()=> {
     if (selectedDate === null) return;
     getPaymentData({date: selectedDate}).then(v => setPaymentData(v));
   }, [selectedDate]);
-
-  useEffect(() => {
-    setFilteredData(filterBySearchKeyword(searchText, paymentData));
-  }, [searchText, paymentData])
 
   function approve(userID: number, paid: boolean) {
     return async () => {
@@ -30,20 +35,30 @@ function Payments() {
     }
   }
 
+  async function toggleLock() {
+    if (paymentData == undefined) return;
+    if (selectedDate == null) return;
+    await lockOrderingAndPayments({date: selectedDate, state: !paymentData.locked});
+    setPaymentData(await getPaymentData({date: selectedDate}));
+  }
+
   return (
     <div className="flex flex-col w-100 pb-4 gap-4">
       <Head>
         <DateSelector selectedDate={selectedDate} setSelectedDate={setSelectedDate}/>
       </Head>
-      <SearchBar setValue={setSearchText}/>
-      <Table tableData={filteredData} approve={approve}/>
+      <div className="grid grid-cols-[1fr_1.75rem] w-full px-6 gap-6">
+        <SearchBar setValue={setSearchText}/>
+        {paymentData !== undefined && <LockButton locked={paymentData.locked} toggleLock={toggleLock}/>}
+      </div>
+      {paymentData !== undefined && <Table tableData={filteredData} locked={paymentData.locked} approve={approve} />}
     </div>
   )
 }
 
 function SearchBar({setValue}: {setValue: SetState<string>}) {
   return (
-    <div className="w-full px-6 flex justify-center">
+    <div className="w-full flex justify-center">
       <div className="relative w-full">
         <input
           type="text"
@@ -57,8 +72,23 @@ function SearchBar({setValue}: {setValue: SetState<string>}) {
   )
 }
 
-function filterBySearchKeyword(keyword: string, tableData?: GetPaymentDataResponse) {
-  if (tableData === undefined) return undefined;
+function LockButton({locked, toggleLock}: {locked: boolean, toggleLock: () => void}) {
+  if (locked)
+    return (
+      <button className="w-7 h-7" onClick={toggleLock}>
+        <img src={lockedIcon}/>
+      </button>
+    )
+  else
+    return (
+      <button className="h-7 w-8" onClick={toggleLock}>
+        <img src={unlockedIcon}/>
+      </button>
+    )
+}
+
+function filterBySearchKeyword(keyword: string, tableData: PaymentDataItem[]): PaymentDataItem[] {
+  if (tableData === undefined) return [];
   if (keyword === "") return tableData;
   return tableData.filter(v =>
     v.name.includes(keyword) ||
@@ -68,14 +98,14 @@ function filterBySearchKeyword(keyword: string, tableData?: GetPaymentDataRespon
   )
 }
 
-function Table({tableData, approve}: {tableData?: GetPaymentDataResponse, approve: ((userID: number, paid: boolean) => () => Promise<void>)}) {
+function Table({tableData, locked, approve}: {tableData: PaymentDataItem[], locked: boolean, approve: ApproveFunc}) {
   const titleCells: JSX.Element[] = [];
   const mealNameCells: JSX.Element[] = [];
   const priceCells: JSX.Element[] = [];
   const hasPaidCells: JSX.Element[] = [];
 
   // TODO: Implement onClick
-  tableData?.forEach((v, i) => {
+  tableData.forEach((v, i) => {
     titleCells.push(
       <span className="text-left text-black text-xl font-normal" key={i}>{v.name}</span>
     );
@@ -85,13 +115,9 @@ function Table({tableData, approve}: {tableData?: GetPaymentDataResponse, approv
     priceCells.push(
       <span className="text-center text-black text-xl font-normal" key={i}>{getPrice(v.lunchBoxType)}元</span>
     );
-
-    if (v.paid) hasPaidCells.push(
-      <button className="text-center text-neutral-400 text-xl font-bold" onClick={approve(v.userID, false)} key={i}>已繳費</button>
-    );
-    else hasPaidCells.push(
-      <button className="text-center text-[#00C0CC] text-xl font-bold" onClick={approve(v.userID, true)} key={i}>註記繳費</button>
-    );
+    hasPaidCells.push(
+      <PaymentApproveButton key={i} v={v} locked={locked} approve={approve}/>
+    )
   });
 
   return (
@@ -110,6 +136,20 @@ function Table({tableData, approve}: {tableData?: GetPaymentDataResponse, approv
       </Column>
     </div>
   );
+}
+
+function PaymentApproveButton({v, locked, approve}: {v: PaymentDataItem, locked: boolean, approve: ApproveFunc}) {
+  const oc = (paid: boolean) => approve(v.userID, paid);
+  const className = "text-center text-xl font-bold";
+
+  if (locked && v.paid)
+    return <button className={`${className} text-gray-400`} disabled={locked}>已繳費</button>
+  if (locked && !v.paid)
+    return <button className={`${className} text-gray-400`} disabled={locked}>未繳費</button>
+
+  if (v.paid)
+    return <button className={`${className} text-[#97D581]`} disabled={locked} onClick={oc(false)}>已繳費</button>
+  return <button className={`${className} text-[#00C0CC]`} disabled={locked} onClick={oc(true)}>註記繳費</button>
 }
 
 export default Payments;
