@@ -87,9 +87,12 @@ function DetailsModal({selectedDate, detailsData, setDetailsData}: {selectedDate
         <h2 className="text-center mb-2 text-3xl font-normal">{detailsData.name}</h2>
         <div className="flex flex-col text-left w-full">
           <h3 className="text-left text-neutral-600 text-xl font-bold">自備餐盒</h3>
-          <p className="text-left text-2xl">{data?.personalLunchBox.map(v => v + ", ").toString().slice(0, -2)}</p>
+          <p className="text-left text-2xl">
+            {data?.personalLunchBox.map(v => v.toString()).reduce((prev, v) => `${prev}${v}, `, "").slice(0, -2)}
+          </p>
           <h3 className="text-left text-neutral-600 text-xl font-bold">學校餐盒</h3>
-          <p className="text-left text-2xl">{data?.schoolLunchBox.map(v => v + ", ").toString().slice(0, -2)}</p>
+          <p className="text-left text-2xl">
+            {data?.schoolLunchBox.map(v => v.toString()).reduce((prev, v) => `${prev}${v}, `, "").slice(0, -2)} </p>
         </div>
         <button onClick={() => setDetailsData(null)} className="text-[#00C0CC] font-extrabold text-2xl">關閉</button>
       </div>
