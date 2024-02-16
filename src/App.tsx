@@ -7,7 +7,7 @@ import Meal from "./pages/Meal";
 import Messages from "./pages/Messages";
 import { useEffect, useRef, useState } from "react";
 import { getToken, redirectToLoginPage } from "./util/util";
-import appConstants from "./util/AppConstants"
+import appConstants from "./util/appConstants";
 
 function App() {
   const [roles, setRoles] = useState<string[]>([]);

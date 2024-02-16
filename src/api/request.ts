@@ -1,5 +1,5 @@
 import { getToken, redirectToLoginPage, redirectToMainApp } from "../util/util";
-import appConstants from "../util/AppConstants"
+import appConstants from "../util/appConstants"
 
 export enum HttpMethods {
     GET = "GET",

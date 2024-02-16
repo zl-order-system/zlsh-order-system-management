@@ -1,5 +1,5 @@
 import { LunchBoxType } from "../api/payments/schema";
-import appConstants from "./AppConstants";
+import appConstants from "./appConstants";
 
 export function getPrice(lunchBox: LunchBoxType) {
   switch (lunchBox) {
