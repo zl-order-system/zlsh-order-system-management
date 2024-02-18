@@ -8,34 +8,28 @@ import Messages from "./pages/Messages";
 import { useEffect, useRef, useState } from "react";
 import { getToken, redirectToLoginPage } from "./util/util";
 import appConstants from "./util/appConstants";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 function App() {
-  const [roles, setRoles] = useState<string[]>([]);
-
   useEffect(() => {
     if (getToken() !== null && getToken() !== "") return;
     console.log("Redirecting to Login Page - Token Not Found");
     redirectToLoginPage(window);
   }, [])
 
-  useEffect(() => {
-    (async function() {
-      // setRoles(await (await fetch(`${getAppConstants().backendHost}/api/user/role`)).json());
-      setRoles(await (await fetch(`${appConstants.backendHost}/api/user/roles`, {headers: {"Authorization": `Bearer ${getToken()}`}})).json());
-    })()
-  }, [])
-
   return (
     <div className="font-['Inter']">
-      <Router>
-        <Routes>
-          <Route path={PageRoutes.HOME} element={<Home roles={roles}/>} />
-          <Route path={PageRoutes.STATS} element={<Stats/>} />
-          <Route path={PageRoutes.PAYMENTS} element={<Payments/>} />
-          <Route path={PageRoutes.MEAL} element={<Meal/>} />
-          <Route path={PageRoutes.MESSAGES} element={<Messages/>} />
-        </Routes>
-      </Router>
+      <QueryClientProvider client={new QueryClient()}>
+        <Router>
+          <Routes>
+            <Route path={PageRoutes.HOME} element={<Home/>} />
+            <Route path={PageRoutes.STATS} element={<Stats/>} />
+            <Route path={PageRoutes.PAYMENTS} element={<Payments/>} />
+            <Route path={PageRoutes.MEAL} element={<Meal/>} />
+            <Route path={PageRoutes.MESSAGES} element={<Messages/>} />
+          </Routes>
+        </Router>
+      </QueryClientProvider>
     </div>
   );
 }

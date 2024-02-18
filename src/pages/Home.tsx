@@ -5,21 +5,39 @@ import messagesIcon from "../assets/pages/home/messages.svg";
 import mealIcon from "../assets/pages/home/meal.svg";
 import { Link, To } from "react-router-dom";
 import { PageRoutes } from "../util/types/pages";
+import { getToken } from "../util/util";
+import appConstants from "../util/appConstants";
+import { z } from "zod";
+import { useQuery } from "@tanstack/react-query";
 
-function Home({roles}: {roles: string[]}) {
+function Home() {
+  async function fetchRoles() {
+    const response = await fetch(`${appConstants.backendHost}/api/user/roles`, {headers: {"Authorization": `Bearer ${getToken()}`}});
+    try {
+      return z.array(z.string()).parse(await response.json());
+    } catch (e) {
+      Promise.reject(e);
+    }
+  }
+
+  const {data} = useQuery({
+    queryKey: ["fetRoles"],
+    queryFn: fetchRoles,
+  })
+
   return (
     <div className="flex flex-col gap-3 items-center w-full px-4 pt-4">
       <div className="text-black text-4xl font-semibold flex justify-center">訂餐後台管理系統</div>
       <div className="w-full bg-white shadow-md rounded-xl border-[1px] border-[#ACACAC] flex flex-row flex-wrap justify-around py-5">
-        <PageLink linkTo={PageRoutes.STATS} requiredRole="STATS_ADMIN" roles={roles}>
+        <PageLink linkTo={PageRoutes.STATS} requiredRole="STATS_ADMIN" roles={data}>
           <img src={statisticsIcon}/>
           餐項統計
         </PageLink>
-        <PageLink linkTo={PageRoutes.PAYMENTS} requiredRole="PAYMENTS_ADMIN" roles={roles}>
+        <PageLink linkTo={PageRoutes.PAYMENTS} requiredRole="PAYMENTS_ADMIN" roles={data}>
           <img src={paymentsIcon}/>
           繳費註記
         </PageLink>
-        <PageLink linkTo={PageRoutes.MEAL} requiredRole="MEAL_ADMIN" roles={roles}>
+        <PageLink linkTo={PageRoutes.MEAL} requiredRole="MEAL_ADMIN" roles={data}>
           <img src={mealIcon}/>
           餐項管理
         </PageLink>
@@ -27,7 +45,7 @@ function Home({roles}: {roles: string[]}) {
           <img src={accountsIcon}/>
           帳號管理
         </PageLink> */}
-        <PageLink disabled linkTo={PageRoutes.MESSAGES} requiredRole="MESSAGES_ADMIN" roles={roles}>
+        <PageLink disabled linkTo={PageRoutes.MESSAGES} requiredRole="MESSAGES_ADMIN" roles={data}>
           <img src={messagesIcon}/>
           訊息管理
         </PageLink>
