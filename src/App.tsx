@@ -5,9 +5,8 @@ import Stats from "./pages/Stats";
 import Payments from "./pages/Payments";
 import Meal from "./pages/Meal";
 import Messages from "./pages/Messages";
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 import { getToken, redirectToLoginPage } from "./util/util";
-import appConstants from "./util/appConstants";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 function App() {

@@ -5,24 +5,17 @@ import messagesIcon from "../assets/pages/home/messages.svg";
 import mealIcon from "../assets/pages/home/meal.svg";
 import { Link, To } from "react-router-dom";
 import { PageRoutes } from "../util/types/pages";
-import { getToken } from "../util/util";
-import appConstants from "../util/appConstants";
 import { z } from "zod";
 import { useQuery } from "@tanstack/react-query";
+import { fetchBackend, zodParseAndCatch } from "../api/util";
 
 function Home() {
-  async function fetchRoles() {
-    const response = await fetch(`${appConstants.backendHost}/api/user/roles`, {headers: {"Authorization": `Bearer ${getToken()}`}});
-    try {
-      return z.array(z.string()).parse(await response.json());
-    } catch (e) {
-      Promise.reject(e);
-    }
-  }
-
   const {data} = useQuery({
-    queryKey: ["fetRoles"],
-    queryFn: fetchRoles,
+    queryKey: ["fetchRoles"],
+    queryFn: async function() {
+      const response = await fetchBackend("/api/user/roles");
+      return zodParseAndCatch(response, z.array(z.string()));
+    },
   })
 
   return (
