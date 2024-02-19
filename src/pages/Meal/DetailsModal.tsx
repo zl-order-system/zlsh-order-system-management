@@ -1,8 +1,10 @@
-import { useEffect, useRef, useState } from "react";
-import { getDetailedMealData, updateDetailedMealData } from "../../api/meal/meal"
+import { useEffect, useState } from "react";
+import { getDetailedMealData } from "../../api/meal/meal"
 import trashCanIcon from "../../assets/pages/meal/trash-can.svg"
 import { SetState } from "../../util/types/types";
 import { formatDatePretty } from "./util";
+import { HttpMethod, useMutationShort } from "../../api/util";
+import { z } from "zod";
 
 type WorkingData = [number, MealOption][];
 
@@ -11,6 +13,7 @@ export function DetailsModal({date, setDate}: {date: Date | null, setDate: SetSt
   const [workingData, setWorkingData] = useState<WorkingData>();
   const [numberField, setNumberField] = useState("");
   const [nameField, setNameField] = useState("");
+  const updateDetailedMealData = useMutationShort("/api/admin/meal/detailed", HttpMethod.PUT, z.undefined(), "updateDetailedMealData");
 
   useEffect(() => {
     if (date === null) {

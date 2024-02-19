@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { GetStatDataResponse, GetStatDetailedDataResponse } from "../api/stats/schema";
 import { DateSelector, Head } from "../components/Head";
-import { getStatData } from "../api/stats/stats";
 import { SetState } from "../util/types/types";
 import { Column, TitleColumn } from "../components/Table";
 import { useQuery } from "@tanstack/react-query";
-import { fetchBackend, fetchBackendWParams, zodParse } from "../api/util";
+import { fetchBackendWParamsShort } from "../api/util";
 import { z } from "zod";
 
 type ModalStateOpen = {
@@ -20,15 +19,14 @@ type ModalState = ModalStateOpen | ModalStateClosed;
 
 // Page main component
 function Stats() {
-  const [modalState, setModalState] = useState<ModalState>({ open: false });
+  const [modalState, setModalState] = useState<ModalState>({open: false});
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   const {data: statData} = useQuery({
     enabled: selectedDate !== null,
     queryKey: ["fetchStatsData", selectedDate],
     queryFn: async function(): Promise<GetStatDataResponse> {
-      const response = await fetchBackendWParams("/api/admin/stats", {date: selectedDate});
-      return response.json();
+      return fetchBackendWParamsShort("/api/admin/stats", {date: selectedDate}, z.any())
     }
   });
 
@@ -84,11 +82,10 @@ function DetailsModal({selectedDate, modalState, setModalState}: {selectedDate: 
   const {data} = useQuery({
     queryKey: ["fetchStatsDetailedData", modalState, selectedDate],
     queryFn: async function(): Promise<GetStatDetailedDataResponse> {
-      const response = await fetchBackendWParams("/api/admin/stats/detailed", {
+      return fetchBackendWParamsShort("/api/admin/stats/detailed", {
         date: selectedDate,
         mealID: modalState.id
-      });
-      return response.json();
+      }, z.any());
     },
   });
 

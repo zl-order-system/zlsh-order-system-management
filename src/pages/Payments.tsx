@@ -2,44 +2,56 @@ import searchIcon from "../assets/pages/payments/search-icon.svg";
 import lockedIcon from "../assets/pages/payments/lock/locked.svg";
 import unlockedIcon from "../assets/pages/payments/lock/unlocked.svg";
 import { DateSelector, Head } from "../components/Head";
-import { useEffect, useMemo, useReducer, useState } from "react";
+import { useMemo, useState } from "react";
 import { SetState } from "../util/types/types";
 import { GetPaymentDataResponse, PaymentDataItem } from "../api/payments/schema";
 import { Column, TitleColumn } from "../components/Table";
 import { getPrice } from "../util/util";
-import { getPaymentData, patchPaymentApprove } from "../api/payments/payments";
-import { lockOrderingAndPayments } from "../api/dates/dates";
+import { useQuery } from "@tanstack/react-query";
+import { HttpMethod, fetchBackendWParamsShort, useMutationShort } from "../api/util";
+import { z } from "zod";
 
 type ApproveFunc = ((userID: number, paid: boolean) => () => Promise<void>);
 
 function Payments() {
   const [searchText, setSearchText] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [paymentData, setPaymentData] = useState<GetPaymentDataResponse>();
 
+  // Get stat data
+  const {data: paymentData, refetch: refetchPaymentData} = useQuery({
+    enabled: selectedDate !== null,
+    queryKey: ["fetchPaymentsData", selectedDate],
+    queryFn: async function(): Promise<GetPaymentDataResponse> {
+      return fetchBackendWParamsShort("/api/admin/payments", {date: selectedDate}, z.any());
+    }
+  });
+
+  // Filter data by search keyword
   const filteredData = useMemo<PaymentDataItem[]>(() =>  {
     if (paymentData === undefined) return [];
     return filterBySearchKeyword(searchText, paymentData.data);
   }, [searchText, paymentData]);
 
-  useEffect(()=> {
-    if (selectedDate === null) return;
-    getPaymentData({date: selectedDate}).then(v => setPaymentData(v));
-  }, [selectedDate]);
 
+  // Approve mutation hook
+  const paymentApprove = useMutationShort("/api/admin/payments", HttpMethod.PATCH, z.undefined(), "paymentApprove")
+  // Button function for approve
   function approve(userID: number, paid: boolean) {
     return async () => {
       if (selectedDate === null) return;
-      await patchPaymentApprove({userID: userID, date: selectedDate, paid: paid})
-      setPaymentData(await getPaymentData({date: selectedDate}));
+      await paymentApprove({date: selectedDate, userID, paid});
+      refetchPaymentData();
     }
   }
 
+  // Lock mutation hook
+  const lock = useMutationShort("/api/admin/order/lock", HttpMethod.PATCH, z.undefined(), "lockOrderingAndPayments");
+  // Button function for lock toggle
   async function toggleLock() {
-    if (paymentData == undefined) return;
     if (selectedDate == null) return;
-    await lockOrderingAndPayments({date: selectedDate, state: !paymentData.locked});
-    setPaymentData(await getPaymentData({date: selectedDate}));
+    if (paymentData == undefined) return;
+    await lock({date: selectedDate, state: !paymentData.locked});
+    refetchPaymentData();
   }
 
   return (
@@ -88,7 +100,6 @@ function LockButton({locked, toggleLock}: {locked: boolean, toggleLock: () => vo
 }
 
 function filterBySearchKeyword(keyword: string, tableData: PaymentDataItem[]): PaymentDataItem[] {
-  if (tableData === undefined) return [];
   if (keyword === "") return tableData;
   return tableData.filter(v =>
     v.name.includes(keyword) ||
@@ -139,7 +150,7 @@ function Table({tableData, locked, approve}: {tableData: PaymentDataItem[], lock
 }
 
 function PaymentApproveButton({v, locked, approve}: {v: PaymentDataItem, locked: boolean, approve: ApproveFunc}) {
-  const oc = (paid: boolean) => approve(v.userID, paid);
+  const onClick = (paid: boolean) => approve(v.userID, paid);
   const className = "text-center text-xl font-bold";
 
   if (locked && v.paid)
@@ -148,8 +159,8 @@ function PaymentApproveButton({v, locked, approve}: {v: PaymentDataItem, locked:
     return <button className={`${className} text-gray-400`} disabled={locked}>未繳費</button>
 
   if (v.paid)
-    return <button className={`${className} text-[#97D581]`} disabled={locked} onClick={oc(false)}>已繳費</button>
-  return <button className={`${className} text-[#00C0CC]`} disabled={locked} onClick={oc(true)}>註記繳費</button>
+    return <button className={`${className} text-[#97D581]`} disabled={locked} onClick={onClick(false)}>已繳費</button>
+  return <button className={`${className} text-[#00C0CC]`} disabled={locked} onClick={onClick(true)}>註記繳費</button>
 }
 
 export default Payments;

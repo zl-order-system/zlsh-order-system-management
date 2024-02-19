@@ -7,15 +7,12 @@ import { Link, To } from "react-router-dom";
 import { PageRoutes } from "../util/types/pages";
 import { z } from "zod";
 import { useQuery } from "@tanstack/react-query";
-import { fetchBackend, zodParse } from "../api/util";
+import { fetchBackend, fetchBackendCurry, zodParse } from "../api/util";
 
 function Home() {
   const roles = useQuery({
     queryKey: ["fetchRoles"],
-    queryFn: async function() {
-      const response = await fetchBackend("/api/user/roles");
-      return zodParse(response, z.array(z.string()));
-    },
+    queryFn: fetchBackendCurry("/api/user/roles", z.array(z.string()))
   });
 
   return (
