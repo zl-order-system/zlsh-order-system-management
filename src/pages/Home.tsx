@@ -7,30 +7,30 @@ import { Link, To } from "react-router-dom";
 import { PageRoutes } from "../util/types/pages";
 import { z } from "zod";
 import { useQuery } from "@tanstack/react-query";
-import { fetchBackend, zodParseAndCatch } from "../api/util";
+import { fetchBackend, zodParse } from "../api/util";
 
 function Home() {
-  const {data} = useQuery({
+  const roles = useQuery({
     queryKey: ["fetchRoles"],
     queryFn: async function() {
       const response = await fetchBackend("/api/user/roles");
-      return zodParseAndCatch(response, z.array(z.string()));
+      return zodParse(response, z.array(z.string()));
     },
-  })
+  });
 
   return (
     <div className="flex flex-col gap-3 items-center w-full px-4 pt-4">
       <div className="text-black text-4xl font-semibold flex justify-center">訂餐後台管理系統</div>
       <div className="w-full bg-white shadow-md rounded-xl border-[1px] border-[#ACACAC] flex flex-row flex-wrap justify-around py-5">
-        <PageLink linkTo={PageRoutes.STATS} requiredRole="STATS_ADMIN" roles={data}>
+        <PageLink linkTo={PageRoutes.STATS} requiredRole="STATS_ADMIN" roles={roles.data}>
           <img src={statisticsIcon}/>
           餐項統計
         </PageLink>
-        <PageLink linkTo={PageRoutes.PAYMENTS} requiredRole="PAYMENTS_ADMIN" roles={data}>
+        <PageLink linkTo={PageRoutes.PAYMENTS} requiredRole="PAYMENTS_ADMIN" roles={roles.data}>
           <img src={paymentsIcon}/>
           繳費註記
         </PageLink>
-        <PageLink linkTo={PageRoutes.MEAL} requiredRole="MEAL_ADMIN" roles={data}>
+        <PageLink linkTo={PageRoutes.MEAL} requiredRole="MEAL_ADMIN" roles={roles.data}>
           <img src={mealIcon}/>
           餐項管理
         </PageLink>
@@ -38,7 +38,7 @@ function Home() {
           <img src={accountsIcon}/>
           帳號管理
         </PageLink> */}
-        <PageLink disabled linkTo={PageRoutes.MESSAGES} requiredRole="MESSAGES_ADMIN" roles={data}>
+        <PageLink disabled linkTo={PageRoutes.MESSAGES} requiredRole="MESSAGES_ADMIN" roles={roles.data}>
           <img src={messagesIcon}/>
           訊息管理
         </PageLink>
