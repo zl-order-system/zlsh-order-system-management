@@ -4,7 +4,7 @@ import { DateSelector, Head } from "../components/Head";
 import { SetState } from "../util/types/types";
 import { Column, TitleColumn } from "../components/Table";
 import { useQuery } from "@tanstack/react-query";
-import { fetchBackendWParamsShort } from "../api/util";
+import { fetchBackendWParamsShort, useQueryWParamsShort } from "../api/util";
 import { z } from "zod";
 
 type ModalStateOpen = {
@@ -22,12 +22,19 @@ function Stats() {
   const [modalState, setModalState] = useState<ModalState>({open: false});
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
-  const {data: statData} = useQuery({
+  // const {data: statData} = useQuery({
+  //   enabled: selectedDate !== null,
+  //   queryKey: ["fetchStatsData", selectedDate],
+  //   queryFn: async function(): Promise<GetStatDataResponse> {
+  //     return fetchBackendWParamsShort("/api/admin/stats", {date: selectedDate}, z.any())
+  //   }
+  // });
+
+  const [statData] = useQueryWParamsShort("/api/admin/stats", {
     enabled: selectedDate !== null,
-    queryKey: ["fetchStatsData", selectedDate],
-    queryFn: async function(): Promise<GetStatDataResponse> {
-      return fetchBackendWParamsShort("/api/admin/stats", {date: selectedDate}, z.any())
-    }
+    key: ["fetchStatsData", selectedDate],
+    body: {date: selectedDate},
+    resSchema: z.any(),
   });
 
   return (

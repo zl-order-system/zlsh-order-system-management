@@ -1,7 +1,7 @@
 import appConstants from "../util/appConstants";
 import { z } from "zod";
 import { formatDate, getToken } from "../util/util";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 export enum HttpMethod {
   GET = "GET",
@@ -67,6 +67,17 @@ export function useMutationShort<Req extends object, Res>(path: string, method: 
     mutationKey: [key],
     mutationFn: async (request: Req) => fetchBackendWBodyShort<Req, Res>(path, method, request, resSchema)
   }).mutateAsync;
+}
+
+export function useQueryWParamsShort<Req extends object, Res>(path: string, data: {body: Req, resSchema: z.Schema<Res>, key: any, enabled: boolean}) {
+  const query = useQuery({
+    enabled: data.enabled,
+    queryKey: data.key,
+    queryFn: async function(): Promise<Res> {
+      return fetchBackendWParamsShort(path, data.body, data.resSchema);
+    }
+  });
+  return [query.data, query.isLoading, query.refetch]
 }
 
 

@@ -8,7 +8,7 @@ import { GetPaymentDataResponse, PaymentDataItem } from "../api/payments/schema"
 import { Column, TitleColumn } from "../components/Table";
 import { getPrice } from "../util/util";
 import { useQuery } from "@tanstack/react-query";
-import { HttpMethod, fetchBackendWParamsShort, useMutationShort } from "../api/util";
+import { HttpMethod, fetchBackendWParamsShort, useMutationShort, useQueryWParamsShort } from "../api/util";
 import { z } from "zod";
 
 type ApproveFunc = ((userID: number, paid: boolean) => () => Promise<void>);
@@ -18,12 +18,19 @@ function Payments() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   // Get stat data
-  const {data: paymentData, refetch: refetchPaymentData} = useQuery({
+  // const {data: paymentData, refetch: refetchPaymentData} = useQuery({
+  //   enabled: selectedDate !== null,
+  //   queryKey: ["fetchPaymentsData", selectedDate],
+  //   queryFn: async function(): Promise<GetPaymentDataResponse> {
+  //     return fetchBackendWParamsShort("/api/admin/payments", {date: selectedDate}, z.any());
+  //   }
+  // });
+
+  const [paymentData, _, refetchPaymentData] = useQueryWParamsShort("/api/admin/payments", {
     enabled: selectedDate !== null,
-    queryKey: ["fetchPaymentsData", selectedDate],
-    queryFn: async function(): Promise<GetPaymentDataResponse> {
-      return fetchBackendWParamsShort("/api/admin/payments", {date: selectedDate}, z.any());
-    }
+    key: ["fetchPaymentsData", selectedDate],
+    body: {date: selectedDate},
+    resSchema: z.any(),
   });
 
   // Filter data by search keyword
