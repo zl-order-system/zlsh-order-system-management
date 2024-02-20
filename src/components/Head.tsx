@@ -8,6 +8,9 @@ import leftArrowIcon from "../assets/components/head/left-arrow-thick.svg";
 import leftTriangleIcon from "../assets/components/head/left-triangle.svg";
 import rightTriangleIcon from "../assets/components/head/right-triangle.svg";
 import { formatDatePretty } from "../pages/Meal/util";
+import { useQuery } from "@tanstack/react-query";
+import { fetchBackendCurry } from "../api/util";
+import { date, z } from "zod";
 
 export function Head({children}: {children?: JSX.Element}) {
   return (
@@ -19,7 +22,6 @@ export function Head({children}: {children?: JSX.Element}) {
   )
 }
 
-
 export function BackToHome() {
   return (
     <Link to={PageRoutes.HOME} className="flex gap-2 px-6 w-fit text-black text-2xl font-semibold">
@@ -30,12 +32,16 @@ export function BackToHome() {
 }
 
 export function DateSelector({selectedDate, setSelectedDate}: {selectedDate: Date | null, setSelectedDate: SetState<Date | null>}) {
-  const [dates, setDates] = useState<Date[]>();
+  // const [dates, setDates] = useState<Date[]>();
   const [dateID, setDateID] = useState(0);
+  const {data: dates} = useQuery({
+    queryKey: ["fetchUpcomingDates"],
+    queryFn: fetchBackendCurry("/api/admin/upcoming-dates", z.array(z.date()))
+  });
 
-  useEffect(() => {
-    getUpcomingDates().then(v => setDates(v.map(s => new Date(s))));
-  }, [])
+  // useEffect(() => {
+  //   getUpcomingDates().then(v => setDates(v.map(s => new Date(s))));
+  // }, [])
 
   useEffect(() => {
     if (dates === undefined) return;

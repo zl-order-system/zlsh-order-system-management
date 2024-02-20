@@ -54,7 +54,6 @@ export function DetailsModal({date, setDate}: {date: Date | null, setDate: SetSt
     const options = Array.from(workingData)
       .sort((a, b) => a[0] - b[0])
       .map(([_, v]) => v);
-    console.log(date)
     updateDetailedMealData({options, date});
     setDate(null);
   }

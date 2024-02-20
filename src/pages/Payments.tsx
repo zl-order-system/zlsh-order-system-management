@@ -26,12 +26,23 @@ function Payments() {
   //   }
   // });
 
-  const [paymentData, _, refetchPaymentData] = useQueryWParamsShort("/api/admin/payments", {
+  const {data: paymentData, refetch: refetchPaymentData} = useQuery({
     enabled: selectedDate !== null,
-    key: ["fetchPaymentsData", selectedDate],
-    body: {date: selectedDate},
-    resSchema: z.any(),
+    queryKey: ["fetchPaymentsData", selectedDate],
+    queryFn: async function(): Promise<GetPaymentDataResponse> {
+      return fetchBackendWParamsShort("/api/admin/payments", {date: selectedDate}, z.any());
+    }
   });
+
+  // const [paymentData, _, refetchPaymentData] = useQueryWParamsShort("/api/admin/payments", {
+  //   enabled: selectedDate !== null,
+  //   key: ["fetchPaymentsData", selectedDate],
+  //   body: {date: selectedDate},
+  //   resSchema: z.any(),
+  // });
+
+  console.log(selectedDate)
+  console.log(paymentData)
 
   // Filter data by search keyword
   const filteredData = useMemo<PaymentDataItem[]>(() =>  {

@@ -8,13 +8,14 @@ import Messages from "./pages/Messages";
 import { useEffect } from "react";
 import { getToken, redirectToLoginPage } from "./util/util";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { replaceStringWDate } from "./api/util";
 
 function App() {
   useEffect(() => {
     if (getToken() !== null && getToken() !== "") return;
     console.log("Redirecting to Login Page - Token Not Found");
     redirectToLoginPage(window);
-  }, [])
+  }, []);
 
   return (
     <div className="font-['Inter']">

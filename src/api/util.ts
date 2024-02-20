@@ -1,5 +1,5 @@
 import appConstants from "../util/appConstants";
-import { z } from "zod";
+import { array, object, z } from "zod";
 import { formatDate, getToken } from "../util/util";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
@@ -13,19 +13,71 @@ export enum HttpMethod {
 }
 
 export async function zodParse<T>(response: Response, schema: z.Schema<T>) {
-  return schema.parse(await response.json());
+  return schema.parse(replaceStringWDate(await response.json()));
 }
 
 export function searchParamsBuilder<T extends object>(request: T) {
-  const params = Object.entries(request).map(v => {
-    if (v[1] instanceof Date)
-      return [v[0], formatDate(v[1])];
-    return v;
-  })
-  return (new URLSearchParams(params)).toString();
+  const data = replaceDateWString(request);
+  return (new URLSearchParams(Object.entries(data as object))).toString();
+}
+
+// export function replaceDateWString(request: unknown): unknown {
+//   if (request instanceof Date)
+//     return formatDate(request);
+
+//   if (Array.isArray(request))
+//     return request.map(v => {
+//       if (Array.isArray(request) || v instanceof object)
+//         return replaceDateWString(v);
+//       if (v instanceof Date)
+//         return formatDate(v);
+//       return v;
+//     })
+
+//   if (request instanceof object)
+//     return Object.fromEntries(Object.entries(request).map(v => {
+//       if (v[1] instanceof Date)
+//         return [v[0], formatDate(v[1])];
+//       return v;
+//     }))
+// }
+
+export function replaceDateWString(obj: unknown): unknown {
+  if (obj instanceof Date)
+    return formatDate(obj);
+
+  if (Array.isArray(obj))
+    return obj.map(v => replaceDateWString(v))
+
+  if (typeof obj === "object")
+    return Object.fromEntries(Object.entries(obj as object).map(v => [v[0], replaceDateWString(v[1])]))
+
+  return obj;
+}
+
+function convertToDateIfDate(str: string): Date | string {
+  const date = new Date(str);
+  if (isNaN(date.valueOf()))
+    return str;
+  return date;
+};
+
+export function replaceStringWDate(obj: unknown): unknown {
+  if (typeof obj === "string")
+    return convertToDateIfDate(obj);
+
+  if (Array.isArray(obj))
+    return obj.map(v => replaceStringWDate(v))
+
+  if (typeof obj === "object")
+    return Object.fromEntries(Object.entries(obj as object).map(v => [v[0], replaceStringWDate(v[1])]))
+
+  return obj;
 }
 
 export async function fetchBackend(path: string, init: RequestInit = {}) {
+  console.log("fetchBackend")
+  console.log(path, init)
   const headers = {
     "Authorization": `Bearer ${getToken()}`,
     "Content-Type": "application/json"
@@ -45,19 +97,19 @@ export function fetchBackendCurry<R>(url: string, resSchema: z.Schema<R>) {
 }
 
 export async function fetchBackendWBodyShort<T extends object, R>(path: string, method: HttpMethod, request: T, resSchema: z.Schema<R>): Promise<R | undefined> {
-  const requestBody = Object.entries(request).map(v => {
-    if (v[1] instanceof Date)
-      return [v[0], formatDate(v[1])];
-    return v;
-  })
-  const response = await fetchBackend(path, {body: JSON.stringify(Object.fromEntries(requestBody)), method});
+  const response = await fetchBackend(path, {body: JSON.stringify(replaceDateWString(request)), method});
   if (resSchema instanceof z.ZodUndefined)
     return undefined;
   return zodParse(response, resSchema);
 }
 
 export async function fetchBackendWParamsShort<T extends object, R>(path: string, request: T, resSchema: z.Schema<R>): Promise<R> {
-  const response = await fetchBackend(`${path}?${searchParamsBuilder(request)}`);
+  console.log("fetchBackendWParamsShort")
+  console.log(path)
+  console.log(request)
+  const params = searchParamsBuilder(request);
+  console.log(params)
+  const response = await fetchBackend(`${path}?${params}`);
   return zodParse(response, resSchema);
 }
 
