@@ -76,8 +76,6 @@ export function replaceStringWDate(obj: unknown): unknown {
 }
 
 export async function fetchBackend(path: string, init: RequestInit = {}) {
-  console.log("fetchBackend")
-  console.log(path, init)
   const headers = {
     "Authorization": `Bearer ${getToken()}`,
     "Content-Type": "application/json"
@@ -104,11 +102,7 @@ export async function fetchBackendWBodyShort<T extends object, R>(path: string, 
 }
 
 export async function fetchBackendWParamsShort<T extends object, R>(path: string, request: T, resSchema: z.Schema<R>): Promise<R> {
-  console.log("fetchBackendWParamsShort")
-  console.log(path)
-  console.log(request)
   const params = searchParamsBuilder(request);
-  console.log(params)
   const response = await fetchBackend(`${path}?${params}`);
   return zodParse(response, resSchema);
 }

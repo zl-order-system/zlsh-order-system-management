@@ -41,9 +41,6 @@ function Payments() {
   //   resSchema: z.any(),
   // });
 
-  console.log(selectedDate)
-  console.log(paymentData)
-
   // Filter data by search keyword
   const filteredData = useMemo<PaymentDataItem[]>(() =>  {
     if (paymentData === undefined) return [];
