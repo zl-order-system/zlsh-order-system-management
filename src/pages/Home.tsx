@@ -7,7 +7,7 @@ import { Link, To } from "react-router-dom";
 import { PageRoutes } from "../util/types/pages";
 import { z } from "zod";
 import { useQuery } from "@tanstack/react-query";
-import { fetchBackend, fetchBackendCurry, zodParse } from "../api/util";
+import { fetchBackendCurry } from "../api/util";
 
 function Home() {
   const roles = useQuery({
