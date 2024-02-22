@@ -4,7 +4,7 @@ import unlockedIcon from "../assets/pages/payments/lock/unlocked.svg";
 import { DateSelector, Head } from "../components/Head";
 import { useMemo, useState } from "react";
 import { SetState } from "../util/types/types";
-import { GetPaymentDataResponse, PaymentDataItem } from "../api/payments/schema";
+import { GetPaymentDataResponse, PaymentDataItem, zGetPaymentDataResponse } from "../api/payments/schema";
 import { Column, TitleColumn } from "../components/Table";
 import { getPrice } from "../util/util";
 import { useQuery } from "@tanstack/react-query";
@@ -18,34 +18,18 @@ function Payments() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   // Get stat data
-  // const {data: paymentData, refetch: refetchPaymentData} = useQuery({
-  //   enabled: selectedDate !== null,
-  //   queryKey: ["fetchPaymentsData", selectedDate],
-  //   queryFn: async function(): Promise<GetPaymentDataResponse> {
-  //     return fetchBackendWParamsShort("/api/admin/payments", {date: selectedDate}, z.any());
-  //   }
-  // });
-
-  const {data: paymentData, refetch: refetchPaymentData} = useQuery({
+  const {data, refetch} = useQueryWParamsShort("/api/admin/payments", {
     enabled: selectedDate !== null,
-    queryKey: ["fetchPaymentsData", selectedDate],
-    queryFn: async function(): Promise<GetPaymentDataResponse> {
-      return fetchBackendWParamsShort("/api/admin/payments", {date: selectedDate}, z.any());
-    }
+    key: ["fetchPaymentsData", selectedDate],
+    body: {date: selectedDate},
+    resSchema: zGetPaymentDataResponse,
   });
-
-  // const [paymentData, _, refetchPaymentData] = useQueryWParamsShort("/api/admin/payments", {
-  //   enabled: selectedDate !== null,
-  //   key: ["fetchPaymentsData", selectedDate],
-  //   body: {date: selectedDate},
-  //   resSchema: z.any(),
-  // });
 
   // Filter data by search keyword
   const filteredData = useMemo<PaymentDataItem[]>(() =>  {
-    if (paymentData === undefined) return [];
-    return filterBySearchKeyword(searchText, paymentData.data);
-  }, [searchText, paymentData]);
+    if (data === undefined) return [];
+    return filterBySearchKeyword(searchText, data.data);
+  }, [searchText, data]);
 
 
   // Approve mutation hook
@@ -55,7 +39,7 @@ function Payments() {
     return async () => {
       if (selectedDate === null) return;
       await paymentApprove({date: selectedDate, userID, paid});
-      refetchPaymentData();
+      refetch();
     }
   }
 
@@ -64,9 +48,9 @@ function Payments() {
   // Button function for lock toggle
   async function toggleLock() {
     if (selectedDate == null) return;
-    if (paymentData == undefined) return;
-    await lock({date: selectedDate, state: !paymentData.locked});
-    refetchPaymentData();
+    if (data == undefined) return;
+    await lock({date: selectedDate, state: !data.locked});
+    refetch();
   }
 
   return (
@@ -76,9 +60,9 @@ function Payments() {
       </Head>
       <div className="grid grid-cols-[1fr_1.75rem] w-full px-6 gap-6">
         <SearchBar setValue={setSearchText}/>
-        {paymentData !== undefined && <LockButton locked={paymentData.locked} toggleLock={toggleLock}/>}
+        {data !== undefined && <LockButton locked={data.locked} toggleLock={toggleLock}/>}
       </div>
-      {paymentData !== undefined && <Table tableData={filteredData} locked={paymentData.locked} approve={approve} />}
+      {data !== undefined && <Table tableData={filteredData} locked={data.locked} approve={approve} />}
     </div>
   )
 }

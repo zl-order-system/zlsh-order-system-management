@@ -12,48 +12,6 @@ export enum HttpMethod {
   OPTIONS = "OPTIONS"
 }
 
-export async function zodParse<T>(response: Response, schema: z.Schema<T>) {
-  return schema.parse(replaceStringWDate(await response.json()));
-}
-
-export function searchParamsBuilder<T extends object>(request: T) {
-  const data = replaceDateWString(request);
-  return (new URLSearchParams(Object.entries(data as object))).toString();
-}
-
-// export function replaceDateWString(request: unknown): unknown {
-//   if (request instanceof Date)
-//     return formatDate(request);
-
-//   if (Array.isArray(request))
-//     return request.map(v => {
-//       if (Array.isArray(request) || v instanceof object)
-//         return replaceDateWString(v);
-//       if (v instanceof Date)
-//         return formatDate(v);
-//       return v;
-//     })
-
-//   if (request instanceof object)
-//     return Object.fromEntries(Object.entries(request).map(v => {
-//       if (v[1] instanceof Date)
-//         return [v[0], formatDate(v[1])];
-//       return v;
-//     }))
-// }
-
-export function replaceDateWString(obj: unknown): unknown {
-  if (obj instanceof Date)
-    return formatDate(obj);
-
-  if (Array.isArray(obj))
-    return obj.map(v => replaceDateWString(v))
-
-  if (typeof obj === "object")
-    return Object.fromEntries(Object.entries(obj as object).map(v => [v[0], replaceDateWString(v[1])]))
-
-  return obj;
-}
 
 function convertToDateIfDate(str: string): Date | string {
   const date = new Date(str);
@@ -75,6 +33,28 @@ export function replaceStringWDate(obj: unknown): unknown {
   return obj;
 }
 
+export function replaceDateWString(obj: unknown): unknown {
+  if (obj instanceof Date)
+    return formatDate(obj);
+
+  if (Array.isArray(obj))
+    return obj.map(v => replaceDateWString(v))
+
+  if (typeof obj === "object")
+    return Object.fromEntries(Object.entries(obj as object).map(v => [v[0], replaceDateWString(v[1])]))
+
+  return obj;
+}
+
+export async function zodParse<T>(response: Response, schema: z.Schema<T>) {
+  return schema.parse(replaceStringWDate(await response.json()));
+}
+
+export function searchParamsBuilder<T extends object>(request: T) {
+  const data = replaceDateWString(request);
+  return (new URLSearchParams(Object.entries(data as object))).toString();
+}
+
 export async function fetchBackend(path: string, init: RequestInit = {}) {
   const headers = {
     "Authorization": `Bearer ${getToken()}`,
@@ -87,11 +67,10 @@ export async function fetchBackend(path: string, init: RequestInit = {}) {
 //   return fetchBackend(`${path}?${searchParamsBuilder(request)}`, init);
 // }
 
-export function fetchBackendCurry<R>(url: string, resSchema: z.Schema<R>) {
-  return async (): Promise<R> => {
-    const response = await fetchBackend(url);
-    return zodParse(response, resSchema);
-  }
+export async function fetchBackendWParamsShort<T extends object, R>(path: string, request: T, resSchema: z.Schema<R>): Promise<R> {
+  const params = searchParamsBuilder(request);
+  const response = await fetchBackend(`${path}?${params}`);
+  return zodParse(response, resSchema);
 }
 
 export async function fetchBackendWBodyShort<T extends object, R>(path: string, method: HttpMethod, request: T, resSchema: z.Schema<R>): Promise<R | undefined> {
@@ -101,10 +80,11 @@ export async function fetchBackendWBodyShort<T extends object, R>(path: string, 
   return zodParse(response, resSchema);
 }
 
-export async function fetchBackendWParamsShort<T extends object, R>(path: string, request: T, resSchema: z.Schema<R>): Promise<R> {
-  const params = searchParamsBuilder(request);
-  const response = await fetchBackend(`${path}?${params}`);
-  return zodParse(response, resSchema);
+export function fetchBackendCurry<R>(url: string, resSchema: z.Schema<R>) {
+  return async (): Promise<R> => {
+    const response = await fetchBackend(url);
+    return zodParse(response, resSchema);
+  }
 }
 
 // Custom hooks
@@ -123,7 +103,7 @@ export function useQueryWParamsShort<Req extends object, Res>(path: string, data
       return fetchBackendWParamsShort(path, data.body, data.resSchema);
     }
   });
-  return [query.data, query.isLoading, query.refetch]
+  return query;
 }
 
 

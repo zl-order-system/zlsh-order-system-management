@@ -1,15 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getDetailedMealData } from "../../api/meal/meal"
 import trashCanIcon from "../../assets/pages/meal/trash-can.svg"
 import { SetState } from "../../util/types/types";
 import { formatDatePretty } from "./util";
 import { HttpMethod, useMutationShort } from "../../api/util";
 import { z } from "zod";
+import { MealOption } from "../../api/meal/schema";
 
 type WorkingData = [number, MealOption][];
 
 export function DetailsModal({date, setDate}: {date: Date | null, setDate: SetState<Date | null>}) {
-  const [data, setData] = useState<GetMealDetailedResponse>();
+  const mutable = useRef<boolean>(false);
   const [workingData, setWorkingData] = useState<WorkingData>();
   const [numberField, setNumberField] = useState("");
   const [nameField, setNameField] = useState("");
@@ -17,21 +18,20 @@ export function DetailsModal({date, setDate}: {date: Date | null, setDate: SetSt
 
   useEffect(() => {
     if (date === null) {
-      setData(undefined);
+      mutable.current = false;
       setWorkingData(undefined);
       setNumberField("");
       setNameField("");
       return;
     }
     getDetailedMealData({date}).then(v => {
-      setData(v);
-      setWorkingData(Array.from(v.options, (value, index) => [index + 1, value]));
+      mutable.current = v.mutable;
+      setWorkingData(v.options.map((value, index) => [index + 1, value]));
       setNumberField((v.options.length + 1).toString())
     });
   }, [date]);
 
   if (date === null) return;
-  if (data === undefined) return;
   if (workingData === undefined) return;
 
   function addItem() {
@@ -63,17 +63,17 @@ export function DetailsModal({date, setDate}: {date: Date | null, setDate: SetSt
       <div className="bg-white flex flex-col justify-center items-center p-6 rounded-3xl shadow-lg border border-zinc-600 gap-5 w-full">
         <h2 className="text-center mb-2 text-3xl font-normal">{formatDatePretty(date)}</h2>
         <div className="flex flex-col w-full gap-4">
-          { data.mutable && <div className="flex w-full justify-between">
+          { mutable.current && <div className="flex w-full justify-between">
             <div className="flex gap-2">
               <input value={numberField} onChange={e => setNumberField(e.target.value)} type="number" className="h-8 w-8 p-2 border-[1px] border-[#565656] outline-none rounded-lg text-center"/>
               <input value={nameField} onChange={e => setNameField(e.target.value)} className="h-8 w-28 p-2 border-[1px] border-[#565656] outline-none rounded-lg"/>
             </div>
             <button onClick={addItem} className="text-[#00C0CC] font-extrabold text-2xl">新增</button>
           </div> }
-          <ItemList workingData={workingData} setWorkingData={setWorkingData} mutable={data.mutable}/>
+          <ItemList workingData={workingData} setWorkingData={setWorkingData} mutable={mutable.current}/>
         </div>
         <div className="flex gap-8">
-          { data.mutable && <button onClick={submit} className="text-[#00C0CC] font-extrabold text-2xl">確定</button> }
+          { mutable.current && <button onClick={submit} className="text-[#00C0CC] font-extrabold text-2xl">確定</button> }
           <button onClick={() => setDate(null)} className="text-[#E2473D] font-extrabold text-2xl">取消</button>
         </div>
       </div>

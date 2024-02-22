@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { GetStatDataResponse, GetStatDetailedDataResponse } from "../api/stats/schema";
+import { GetStatDataResponse, GetStatDetailedDataResponse, zGetStatDataResponse, zGetStatDetailedDataResponse } from "../api/stats/schema";
 import { DateSelector, Head } from "../components/Head";
 import { SetState } from "../util/types/types";
 import { Column, TitleColumn } from "../components/Table";
@@ -22,19 +22,11 @@ function Stats() {
   const [modalState, setModalState] = useState<ModalState>({open: false});
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
-  // const {data: statData} = useQuery({
-  //   enabled: selectedDate !== null,
-  //   queryKey: ["fetchStatsData", selectedDate],
-  //   queryFn: async function(): Promise<GetStatDataResponse> {
-  //     return fetchBackendWParamsShort("/api/admin/stats", {date: selectedDate}, z.any())
-  //   }
-  // });
-
-  const [statData] = useQueryWParamsShort("/api/admin/stats", {
+  const {data: statData} = useQueryWParamsShort("/api/admin/stats", {
     enabled: selectedDate !== null,
     key: ["fetchStatsData", selectedDate],
     body: {date: selectedDate},
-    resSchema: z.any(),
+    resSchema: zGetStatDataResponse,
   });
 
   return (
@@ -86,14 +78,14 @@ function Table({tableData, setModalState}: {tableData?: GetStatDataResponse, set
 
 // Details Modal
 function DetailsModal({selectedDate, modalState, setModalState}: {selectedDate: Date, modalState: ModalStateOpen, setModalState: SetState<ModalState>}) {
-  const {data} = useQuery({
-    queryKey: ["fetchStatsDetailedData", modalState, selectedDate],
-    queryFn: async function(): Promise<GetStatDetailedDataResponse> {
-      return fetchBackendWParamsShort("/api/admin/stats/detailed", {
-        date: selectedDate,
-        mealID: modalState.id
-      }, z.any());
+  const {data} = useQueryWParamsShort("/api/admin/stats/detailed", {
+    enabled: selectedDate !== null,
+    key: ["fetchPaymentsData", selectedDate],
+    body: {
+      date: selectedDate,
+      mealID: modalState.id
     },
+    resSchema: zGetStatDetailedDataResponse,
   });
 
   if (data === undefined) return;

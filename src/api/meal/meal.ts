@@ -1,6 +1,7 @@
 import { formatDate, getToken } from "../../util/util";
 import { HttpMethods, handleResponseCode, parseResponseJsonOrThrow, sendRequest } from "../request";
 import appConstants from "../../util/appConstants"
+import { GetMealDetailedRequest, GetMealDetailedResponse } from "./schema";
 
 export async function getDetailedMealData(req: GetMealDetailedRequest): Promise<GetMealDetailedResponse> {
   // await(t => new Promise(r => setTimeout(r, t)))(200);
