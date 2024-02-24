@@ -1,15 +1,36 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Head } from "../../components/Head";
 import { SetState } from "../../util/types/types";
 import { DetailsModal } from "./DetailsModal";
 import { formatDatePretty, getDatesInMonthAfterDate } from "./util";
+import { useQuery } from "@tanstack/react-query";
+import { fetchBackendWParams, zodParse } from "../../api/util";
+import { MealOption, zGetMealDetailedResponse } from "../../api/schema/meal";
 
 function Meal() {
   const [modalDate, setModalDate] = useState<Date | null>(null);
 
+  const {data: modalData} = useQuery({
+    enabled: modalDate !== null,
+    queryKey: [],
+    queryFn: async function() {
+      const response = await fetchBackendWParams("/api/admin/meal/detailed", {modalDate});
+      if (response.status === 404)
+        return({mutable: true, options: []});
+      return zodParse(response, zGetMealDetailedResponse);
+    }
+  })
+
+  const modalWorkingData = useMemo(() => {
+    if (modalData === undefined) return [];
+    return modalData.options.map((value, index): [number, MealOption] => [index + 1, value]);
+  }, [modalData])
+
   return (
-    <div className="">
-      {modalDate !== null && <DetailsModal date={modalDate} setDate={setModalDate}/>}
+    <div>
+      { modalDate !== null && modalData !== undefined &&
+        <DetailsModal date={modalDate} closeModal={() => {}} defaultWorkingData={modalWorkingData} mutable={modalData.mutable} />
+      }
       <Head/>
       <List setModalDate={setModalDate} />
     </div>
