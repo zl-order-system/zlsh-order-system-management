@@ -9,7 +9,7 @@ function Meal() {
 
   return (
     <div className="">
-      <DetailsModal date={modalDate} setDate={setModalDate}/>
+      {modalDate !== null && <DetailsModal date={modalDate} setDate={setModalDate}/>}
       <Head/>
       <List setModalDate={setModalDate} />
     </div>

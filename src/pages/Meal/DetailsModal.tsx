@@ -8,7 +8,7 @@ import { MealOption, zGetMealDetailedResponse } from "../../api/schema/meal";
 
 type WorkingData = [number, MealOption][];
 
-export function DetailsModal({date, setDate}: {date: Date | null, setDate: SetState<Date | null>}) {
+export function DetailsModal({date, setDate}: {date: Date, setDate: SetState<Date | null>}) {
   const mutable = useRef<boolean>(false);
   const [workingData, setWorkingData] = useState<WorkingData>();
   const [numberField, setNumberField] = useState("");
@@ -16,13 +16,6 @@ export function DetailsModal({date, setDate}: {date: Date | null, setDate: SetSt
   const updateDetailedMealData = useMutationShort("/api/admin/meal/detailed", HttpMethod.PUT, z.undefined(), "updateDetailedMealData");
 
   useEffect(() => {
-    if (date === null) {
-      mutable.current = false;
-      setWorkingData(undefined);
-      setNumberField("");
-      setNameField("");
-      return;
-    }
     (async function() {
       const response = await fetchBackendWParams("/api/admin/meal/detailed", {date});
       if (response.status === 404) {
@@ -38,7 +31,6 @@ export function DetailsModal({date, setDate}: {date: Date | null, setDate: SetSt
     })()
   }, [date]);
 
-  if (date === null) return;
   if (workingData === undefined) return;
 
   function addItem() {
@@ -58,7 +50,6 @@ export function DetailsModal({date, setDate}: {date: Date | null, setDate: SetSt
 
   function submit() {
     if (workingData === undefined) return;
-    if (date === null) return;
     const options = Array.from(workingData)
       .sort((a, b) => a[0] - b[0])
       .map(([_, v]) => v);
