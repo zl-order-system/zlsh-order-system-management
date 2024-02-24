@@ -1,11 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { getDetailedMealData } from "../../api/meal/meal"
 import trashCanIcon from "../../assets/pages/meal/trash-can.svg"
 import { SetState } from "../../util/types/types";
 import { formatDatePretty } from "./util";
-import { HttpMethod, useMutationShort } from "../../api/util";
+import { HttpMethod, fetchBackendWParams, useMutationShort, zodParse } from "../../api/util";
 import { z } from "zod";
-import { MealOption } from "../../api/meal/schema";
+import { MealOption, zGetMealDetailedResponse } from "../../api/meal/schema";
 
 type WorkingData = [number, MealOption][];
 
@@ -24,11 +23,19 @@ export function DetailsModal({date, setDate}: {date: Date | null, setDate: SetSt
       setNameField("");
       return;
     }
-    getDetailedMealData({date}).then(v => {
-      mutable.current = v.mutable;
-      setWorkingData(v.options.map((value, index) => [index + 1, value]));
-      setNumberField((v.options.length + 1).toString())
-    });
+    (async function() {
+      const response = await fetchBackendWParams("/api/admin/meal/detailed", {date});
+      if (response.status === 404) {
+        mutable.current = true;
+        setWorkingData([]);
+        setNumberField("1");
+        return
+      }
+      const result = await zodParse(response, zGetMealDetailedResponse);
+      mutable.current = result.mutable;
+      setWorkingData(result.options.map((value, index) => [index + 1, value]));
+      setNumberField((result.options.length + 1).toString())
+    })()
   }, [date]);
 
   if (date === null) return;
@@ -37,6 +44,7 @@ export function DetailsModal({date, setDate}: {date: Date | null, setDate: SetSt
   function addItem() {
     if (workingData === undefined) return;
     if (numberField === "") return;
+    if (nameField === "") return;
     const num = parseInt(numberField);
     if (workingData.find(v => v[0] == num)) return;
 

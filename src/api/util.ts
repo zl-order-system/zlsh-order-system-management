@@ -63,9 +63,9 @@ export async function fetchBackend(path: string, init: RequestInit = {}) {
   return fetch(`${appConstants.backendHost}${path}`, {...init, headers: {...headers, ...init.headers}});
 }
 
-// export function fetchBackendWParams<T extends object>(path: string, request: T, init?: RequestInit) {
-//   return fetchBackend(`${path}?${searchParamsBuilder(request)}`, init);
-// }
+export function fetchBackendWParams<T extends object>(path: string, request: T, init?: RequestInit) {
+  return fetchBackend(`${path}?${searchParamsBuilder(request)}`, init);
+}
 
 export async function fetchBackendWParamsShort<T extends object, R>(path: string, request: T, resSchema: z.Schema<R>): Promise<R> {
   const params = searchParamsBuilder(request);
