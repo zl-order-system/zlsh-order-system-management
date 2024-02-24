@@ -31,7 +31,7 @@ export function DetailsModal({date, closeModal, defaultWorkingData, mutable}: {d
   function submit() {
     const options = Array.from(workingData)
       .sort((a, b) => a[0] - b[0])
-      .map(([_, v]) => v);
+      .map(([, v]) => v);
     updateDetailedMealData({options, date});
     closeModal();
   }

@@ -1,5 +1,5 @@
 import appConstants from "../util/appConstants";
-import { array, object, z } from "zod";
+import { z } from "zod";
 import { formatDate, getToken } from "../util/util";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
@@ -18,7 +18,7 @@ function convertToDateIfDate(str: string): Date | string {
   if (isNaN(date.valueOf()))
     return str;
   return date;
-};
+}
 
 export function replaceStringWDate(obj: unknown): unknown {
   if (typeof obj === "string")

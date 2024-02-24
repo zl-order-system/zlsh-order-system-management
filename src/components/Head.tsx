@@ -41,7 +41,7 @@ export function DateSelector({selectedDate, setSelectedDate}: {selectedDate: Dat
   useEffect(() => {
     if (dates === undefined) return;
     setSelectedDate(dates[dateID])
-  }, [dates, dateID])
+  }, [dates, dateID, setSelectedDate])
 
   const disabled = selectedDate === null || dates === undefined;
 

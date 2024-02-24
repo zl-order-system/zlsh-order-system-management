@@ -11,7 +11,7 @@ import { HttpMethod, useMutationShort, useQueryWParamsShort } from "../api/util"
 import { z } from "zod";
 import ErrorPage from "./Error";
 
-type ApproveFunc = ((userID: number, paid: boolean) => () => Promise<void>);
+type ApproveFunc = (userID: number, paid: boolean) => () => Promise<void>;
 
 function Payments() {
   const [searchText, setSearchText] = useState("");
