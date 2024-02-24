@@ -6,6 +6,7 @@ import { Column, TitleColumn } from "../components/Table";
 import { useQuery } from "@tanstack/react-query";
 import { fetchBackendWParamsShort, useQueryWParamsShort } from "../api/util";
 import { z } from "zod";
+import ErrorPage from "./Error";
 
 type ModalStateOpen = {
   open: true,
@@ -22,12 +23,14 @@ function Stats() {
   const [modalState, setModalState] = useState<ModalState>({open: false});
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
-  const {data: statData} = useQueryWParamsShort("/api/admin/stats", {
+  const {data: statData, isError, error} = useQueryWParamsShort("/api/admin/stats", {
     enabled: selectedDate !== null,
     key: ["fetchStatsData", selectedDate],
     body: {date: selectedDate},
     resSchema: zGetStatDataResponse,
   });
+
+  if (isError) return <ErrorPage error={error}/>
 
   return (
     <div className="flex flex-col w-100 pb-4 gap-4">
@@ -78,9 +81,9 @@ function Table({tableData, setModalState}: {tableData?: GetStatDataResponse, set
 
 // Details Modal
 function DetailsModal({selectedDate, modalState, setModalState}: {selectedDate: Date, modalState: ModalStateOpen, setModalState: SetState<ModalState>}) {
-  const {data} = useQueryWParamsShort("/api/admin/stats/detailed", {
+  const {data, isError, error} = useQueryWParamsShort("/api/admin/stats/detailed", {
     enabled: selectedDate !== null,
-    key: ["fetchPaymentsData", selectedDate],
+    key: ["fetchStatsDetailedData", selectedDate],
     body: {
       date: selectedDate,
       mealID: modalState.id
@@ -88,6 +91,7 @@ function DetailsModal({selectedDate, modalState, setModalState}: {selectedDate: 
     resSchema: zGetStatDetailedDataResponse,
   });
 
+  if (isError) return <ErrorPage error={error}/>
   if (data === undefined) return;
 
   return (

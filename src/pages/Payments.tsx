@@ -10,6 +10,7 @@ import { getPrice } from "../util/util";
 import { useQuery } from "@tanstack/react-query";
 import { HttpMethod, fetchBackendWParamsShort, useMutationShort, useQueryWParamsShort } from "../api/util";
 import { z } from "zod";
+import ErrorPage from "./Error";
 
 type ApproveFunc = ((userID: number, paid: boolean) => () => Promise<void>);
 
@@ -18,7 +19,7 @@ function Payments() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   // Get stat data
-  const {data, refetch} = useQueryWParamsShort("/api/admin/payments", {
+  const {data, refetch, error, isError} = useQueryWParamsShort("/api/admin/payments", {
     enabled: selectedDate !== null,
     key: ["fetchPaymentsData", selectedDate],
     body: {date: selectedDate},
@@ -52,6 +53,8 @@ function Payments() {
     await lock({date: selectedDate, state: !data.locked});
     refetch();
   }
+
+  if (isError) return <ErrorPage error={error}/>
 
   return (
     <div className="flex flex-col w-100 pb-4 gap-4">

@@ -11,6 +11,7 @@ import { formatDatePretty } from "../pages/Meal/util";
 import { useQuery } from "@tanstack/react-query";
 import { fetchBackendCurry } from "../api/util";
 import { date, z } from "zod";
+import ErrorPage from "../pages/Error";
 
 export function Head({children}: {children?: JSX.Element}) {
   return (
@@ -34,7 +35,7 @@ export function BackToHome() {
 export function DateSelector({selectedDate, setSelectedDate}: {selectedDate: Date | null, setSelectedDate: SetState<Date | null>}) {
   // const [dates, setDates] = useState<Date[]>();
   const [dateID, setDateID] = useState(0);
-  const {data: dates} = useQuery({
+  const {data: dates, isError, error} = useQuery({
     queryKey: ["fetchUpcomingDates"],
     queryFn: fetchBackendCurry("/api/admin/upcoming-dates", z.array(z.date()))
   });
@@ -65,6 +66,8 @@ export function DateSelector({selectedDate, setSelectedDate}: {selectedDate: Dat
   let displayDate = "正在獲取日期";
   if (selectedDate !== null)
     displayDate = formatDatePretty(selectedDate);
+
+  if (isError) return <ErrorPage error={error}/>
 
   return (
     <div className="flex w-100 pt-2 px-6 justify-between items-center">
