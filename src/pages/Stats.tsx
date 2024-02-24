@@ -1,11 +1,9 @@
-import { useEffect, useState } from "react";
-import { GetStatDataResponse, GetStatDetailedDataResponse, zGetStatDataResponse, zGetStatDetailedDataResponse } from "../api/stats/schema";
+import { useState } from "react";
+import { GetStatDataResponse, zGetStatDataResponse, zGetStatDetailedDataResponse } from "../api/schema/stats";
 import { DateSelector, Head } from "../components/Head";
 import { SetState } from "../util/types/types";
 import { Column, TitleColumn } from "../components/Table";
-import { useQuery } from "@tanstack/react-query";
-import { fetchBackendWParamsShort, useQueryWParamsShort } from "../api/util";
-import { z } from "zod";
+import { useQueryWParamsShort } from "../api/util";
 import ErrorPage from "./Error";
 
 type ModalStateOpen = {

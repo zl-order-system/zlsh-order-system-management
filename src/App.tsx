@@ -4,11 +4,9 @@ import Home from "./pages/Home";
 import Stats from "./pages/Stats";
 import Payments from "./pages/Payments";
 import Meal from "./pages/Meal";
-import Messages from "./pages/Messages";
 import { useEffect } from "react";
 import { getToken, redirectToLoginPage } from "./util/util";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { replaceStringWDate } from "./api/util";
 
 function App() {
   useEffect(() => {
@@ -26,7 +24,6 @@ function App() {
             <Route path={PageRoutes.STATS} element={<Stats/>} />
             <Route path={PageRoutes.PAYMENTS} element={<Payments/>} />
             <Route path={PageRoutes.MEAL} element={<Meal/>} />
-            <Route path={PageRoutes.MESSAGES} element={<Messages/>} />
           </Routes>
         </Router>
       </QueryClientProvider>

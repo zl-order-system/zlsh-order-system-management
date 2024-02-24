@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { SetState } from "../util/types/types";
 import { PageRoutes } from "../util/types/pages";
-import { getUpcomingDates } from "../api/dates/dates";
 
 import leftArrowIcon from "../assets/components/head/left-arrow-thick.svg";
 import leftTriangleIcon from "../assets/components/head/left-triangle.svg";

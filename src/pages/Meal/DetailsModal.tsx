@@ -4,7 +4,7 @@ import { SetState } from "../../util/types/types";
 import { formatDatePretty } from "./util";
 import { HttpMethod, fetchBackendWParams, useMutationShort, zodParse } from "../../api/util";
 import { z } from "zod";
-import { MealOption, zGetMealDetailedResponse } from "../../api/meal/schema";
+import { MealOption, zGetMealDetailedResponse } from "../../api/schema/meal";
 
 type WorkingData = [number, MealOption][];
 

@@ -4,11 +4,10 @@ import unlockedIcon from "../assets/pages/payments/lock/unlocked.svg";
 import { DateSelector, Head } from "../components/Head";
 import { useMemo, useState } from "react";
 import { SetState } from "../util/types/types";
-import { GetPaymentDataResponse, PaymentDataItem, zGetPaymentDataResponse } from "../api/payments/schema";
+import { PaymentDataItem, zGetPaymentDataResponse } from "../api/schema/payments";
 import { Column, TitleColumn } from "../components/Table";
 import { getPrice } from "../util/util";
-import { useQuery } from "@tanstack/react-query";
-import { HttpMethod, fetchBackendWParamsShort, useMutationShort, useQueryWParamsShort } from "../api/util";
+import { HttpMethod, useMutationShort, useQueryWParamsShort } from "../api/util";
 import { z } from "zod";
 import ErrorPage from "./Error";
 
