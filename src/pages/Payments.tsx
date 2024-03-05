@@ -49,7 +49,7 @@ function Payments() {
   async function toggleLock() {
     if (selectedDate == null) return;
     if (data == undefined) return;
-    await lock({date: selectedDate, state: !data.locked});
+    await lock({date: selectedDate, locked: !data.locked});
     refetch();
   }
 
