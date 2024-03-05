@@ -25,10 +25,14 @@ export function replaceStringWDate(obj: unknown): unknown {
     return convertToDateIfDate(obj);
 
   if (Array.isArray(obj))
-    return obj.map(v => replaceStringWDate(v))
+    return obj.map(replaceStringWDate);
 
   if (typeof obj === "object")
-    return Object.fromEntries(Object.entries(obj as object).map(v => [v[0], replaceStringWDate(v[1])]))
+    return Object.fromEntries(
+      Object
+        .entries(obj as object)
+        .map(v => [v[0], replaceStringWDate(v[1])])
+    );
 
   return obj;
 }

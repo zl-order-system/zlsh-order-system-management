@@ -1,4 +1,4 @@
-import { ZodSchema, object, z } from 'zod';
+import { ZodSchema, z } from 'zod';
 
 export type MealOption = {
   name: string,
@@ -24,7 +24,7 @@ export const zGetMealDetailedResponse: ZodSchema<GetMealDetailedResponse> = z.ob
   options: z.array(zMealOption)
 })
 
-type UpdateMealDetailedRequest = {
+export type UpdateMealDetailedRequest = {
   date: Date,
   options: MealOption[]
 };
