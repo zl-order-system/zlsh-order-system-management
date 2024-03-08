@@ -52,7 +52,7 @@ export function DetailsModal({date, closeModal, defaultWorkingData, mutable}: {d
         </div>
         <div className="flex gap-8">
           { mutable && <button onClick={submit} className="text-[#00C0CC] font-extrabold text-2xl">確定</button> }
-          <button onClick={() => closeModal()} className="text-[#E2473D] font-extrabold text-2xl">取消</button>
+          <button onClick={closeModal} className="text-[#E2473D] font-extrabold text-2xl">取消</button>
         </div>
       </div>
     </div>
